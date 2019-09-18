@@ -1,0 +1,80 @@
+library(forestChange)
+library(gdalUtils)
+library(rgeos)
+library(rgdal)
+library(raster)
+library(plumber)
+
+#* @apiTitle Simple API
+
+#* Echo provided text
+#* @param 
+#* @get /forest
+
+function(var = NULL, stat = NULL, lay = NULL, layID = NULL, pol = NULL, sour = NULL) {
+  
+  ## Identify if a polygon is into the arguments. If 'pol' is not NULL, should
+  ## be a wkt polygon which will cut the 
+  
+  if (!is.null(pol)){
+    
+    ## Create a gdal-readable object from WKT and write
+    wkt <- SpatialPolygonsDataFrame(readWKT(pol), data.frame(ID = 1))
+    wkt@proj4string@projargs <- '+proj=longlat +ellps=GRS80 +no_defs'
+    tmpF <- tempfile()
+    tmpD <- tempdir()
+    writeOGR(wkt, dsn = tmpD, layer = basename(tmpF), driver = 'ESRI Shapefile')
+    
+    ## Assign temporal paths to rasters for forest extent and forest loss
+    treeTemp <- paste0(tempfile(), '.tif')
+    lossTemp <- paste0(tempfile(), '.tif')
+    
+    if (sour == 'hansen'){
+      
+      ##Cut Colombia Hansen layers with WKT geometry
+      
+      system.time(gdalwarp(srcfile = '/data/input/forest/HANSEN/tree_col.tif',
+                           dstfile = treeTemp, 
+                           crop_to_cutline = TRUE,
+                           cutline = paste0(tmpF, '.shp'))) # 68
+      
+      system.time(gdalwarp(srcfile = '/data/input/forest/HANSEN/loss_col.tif', 
+                           dstfile = lossTemp, 
+                           crop_to_cutline = TRUE,
+                           cutline = paste0(tmpF, '.shp')))
+    }
+    if (sour == 'ideam'){
+      
+      ##Cut Colombia IDEAM layers with WKT geometry
+      system.time(gdalwarp(srcfile = '/data/input/forest/IDEAM/tree_col.tif',
+                           dstfile = treeTemp, 
+                           crop_to_cutline = TRUE,
+                           cutline = paste0(tmpF, '.shp'))) # 68
+      
+      system.time(gdalwarp(srcfile = '/data/input/forest/IDEAM/loss_col.tif', 
+                           dstfile = lossTemp, 
+                           crop_to_cutline = TRUE,
+                           cutline = paste0(tmpF, '.shp')))
+      
+    }
+    
+    ## Apply EBVmetric
+    stk <- stack(treeTemp, lossTemp)
+    names(stk) <- c("treecover2000", "lossyear")
+    metrics <- forestChange::EBVmetric(stk, met = stat, year = 10:17)
+  }
+  
+  if (is.null(pol) & (!is.null(lay) & !is.null(layID) ) ){
+    
+    ## Load pre-calculated values. A 'metrics' variable is
+    ## stored in each RData from forest output/forest/...RData
+    load(paste0('/data/output/forest/',lay, '/', layID,'.RData'))
+    
+  }
+  
+  return(list(
+    params = list(var = var, stat = stat, lay = lay, polID = polID),
+    result = metrics
+  ))
+}
+
