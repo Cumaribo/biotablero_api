@@ -1,16 +1,45 @@
 ## Web parsing for biotablero queries
 ## Requires 'curl' and 'jsonlite'
 
+## --------------------------------------------------- ##
+##    Parameters
+## --------------------------------------------------- ##
+##
+## server = 'local' (default) or 'web'. Indicates the API 
+##   location. If 'web' is selected, then must provide the *webURL argument
+## port = ':8000' (default). System port opened for API connection. 
+## webURL = NULL (default). The API web host. 
+## dataPath = NULL (default). Folder containing data. Default value internally is '/data'
+## printURL = FALSE (default). Should this function print the corresponding URL?
+## endpoint = 'biotablero' (default). Endpoint to call. 'biotablero' is the main function. 
+## metric = NULL  (default). Metric to calculate
+## ...  Other parameters for customize the query
+
+
+
+## ---------------------------------------------------
+##  Usage
+## ---------------------------------------------------
+#
+# biotablero(server = 'web', webURL = aws, port = ':8000',
+#            endpoint = 'biotablero',
+#            printURL = TRUE, metric = 'test')
+#
+#
+# ForChange_aws <- biotablero(server = 'web', webURL = aws, port = ':8000', printURL = TRUE,
+#                             endpoint = 'biotablero', metric = 'forest', 
+#                             sour = 'hansen', ebvstat = 'area',
+#                             ebvyear='2000:2018',
+#                             pol = simplePol)
+
+
+
 
 biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath = NULL, printURL = FALSE, 
                        endpoint = 'biotablero',
                        metric = NULL, lay = NULL, polID = NULL, pol = NULL, outformat = NULL,
                        ebvstat = NULL, sour = NULL, cellSize = NULL, ... ) {
 
-  #server='local';port=8000;webURL=NULL;dataPath=NULL;printURL=FALSE;
-  #endpoint='biotablero'; metric=NULL;lay=NULL;polID=NULL;pol=NULL;outformat=NULL;
-  #ebvstat=NULL;sour=NULL;cellSize=NULL
-  
   ## Assign the URL
   .webURL <-  ifelse(is.null(webURL), 'http://biotablero.humboldt.org.co/api', webURL)
   host <- ifelse(server == 'web', .webURL, 'http://localhost')
@@ -29,7 +58,7 @@ biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath
     print(myURL)
   }
   
-  ## Launch the URL
+  ## Connect the URL
   con <- curl::curl(url = myURL)
   
   ## Read the URL
