@@ -38,7 +38,7 @@
 biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath = NULL, printURL = FALSE, 
                        endpoint = 'biotablero',
                        metric = NULL, lay = NULL, polID = NULL, pol = NULL, outformat = NULL,
-                       ebvstat = NULL, sour = NULL, cellSize = NULL, ... ) {
+                       ebvstat = NULL, sour = NULL, cellSize = NULL, rasterLayer = FALSE, ... ) {
 
   ## Assign the URL
   .webURL <-  ifelse(is.null(webURL), 'http://biotablero.humboldt.org.co/api', webURL)
@@ -46,7 +46,7 @@ biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath
   
   ## Create a data.frame with params
   dfParams <- data.frame(val = c(metric = metric, lay = lay, polID = polID, outformat = outformat,
-                                 ebvstat = ebvstat, sour = sour, dataPath = dataPath, 
+                                 ebvstat = ebvstat, sour = sour, dataPath = dataPath, rasterLayer = FALSE, 
                                  cellSize = cellSize, c(...), pol = pol))
   
   ## Build the URL
