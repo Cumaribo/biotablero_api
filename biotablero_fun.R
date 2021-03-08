@@ -46,7 +46,7 @@ biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath
   
   ## Create a data.frame with params
   dfParams <- data.frame(val = c(metric = metric, lay = lay, polID = polID, outformat = outformat,
-                                 ebvstat = ebvstat, sour = sour, dataPath = dataPath, rasterLayer = FALSE, 
+                                 ebvstat = ebvstat, sour = sour, dataPath = dataPath, rasterLayer = rasterLayer, 
                                  cellSize = cellSize, c(...), pol = pol))
   
   ## Build the URL
