@@ -33,8 +33,6 @@
 #                             pol = simplePol)
 
 
-
-
 biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath = NULL, printURL = FALSE, 
                        endpoint = 'biotablero',
                        metric = NULL, lay = NULL, polID = NULL, pol = NULL, outformat = NULL,
@@ -68,3 +66,8 @@ biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath
   ## Return R object values
   return(query)
 }
+
+                    
+## URLonections 
+aws <- 'ec2-3-12-165-32.us-east-2.compute.amazonaws.com'
+aws_port <- ':8080'
