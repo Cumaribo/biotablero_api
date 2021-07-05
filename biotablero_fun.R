@@ -69,5 +69,5 @@ biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath
 
                     
 ## URLonections 
-aws <- 'ec2-3-12-165-32.us-east-2.compute.amazonaws.com'
+aws <- 'ec2-3-21-142-154.us-east-2.compute.amazonaws.com'
 aws_port <- ':8080'
