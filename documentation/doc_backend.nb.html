@@ -11,7 +11,7 @@
 
 
 
-<title>Biotablero Assessent</title>
+<title>Biotablero-Backend Parallel Assessment</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1754,120 +1754,170 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Biotablero Assessent</h1>
+<h1 class="title toc-ignore">Biotablero-Backend Parallel Assessment</h1>
 
 </div>
 
 
 <!-- rnb-text-begin -->
-<p>El objetivo de este trabajo es analizar cuales de las salidas
-gráficas que produce biotablero son compatibles con las de Backend sin
-necesidad de agregar datos nuevos.<br />
-Evaluación de las salidas de Biotablero y el Backenbd:</p>
+<p>Analizar cuales de las salidas gráficas-tabulares que produce backend
+son compatibles con las de Biotablero sin necesidad de necesidad de
+agregar datos nuevos.<br />
+Evaluación de las salidas de Biotablero y el Backend:</p>
 <ol style="list-style-type: decimal">
-<li><p>Envíar pérdida de Bosque. Done. Reproyectado y alienado con lo
-demás</p></li>
+<li><p>Envíar pérdida de Bosque. Done. Reproyectado y alineado con el
+crs estándar prj &lt;- “+proj=tmerc +lat_0=4.596200417
++lon_0=-74.07750791700001 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80
++units=m +no_defs”</p></li>
 <li><p>Nuevas salidas de datos que puedan representarse más fácil en
 Biotablero</p></li>
-<li><p>Consultas perosnalizadas.Que tipo de consultas se pueden
+<li><p>Consultas personalizadas.Que tipo de consultas se pueden
 hacer?</p></li>
-<li><p>Biotablero tiene áreas predefinidas, pero nosotros queremos areas
-custom</p></li>
-<li><p>Que indicadores se peuden usar para analizar esa
+<li><p>Biotablero tiene áreas predefinidas, backend acepta áreas
+definidas por el usuario (limitante: superficie máxima 5.000
+kmˆ2)</p></li>
+<li><p>Que indicadores se pueden usar para analizar esta
 información?</p></li>
 </ol>
 <div id="salidas-de-datos." class="section level2">
 <h2>Salidas de datos.</h2>
 <div id="ecosistemas" class="section level3">
 <h3>Ecosistemas</h3>
-<ol style="list-style-type: decimal">
-<li>Bosques Hansen 2000-2018 (actualizar a 2021) por que carajos
-temriona en 2012 la gráfica? IDEAM (1990-2016) (agregar los nuevos que
-tenemos)</li>
-<li>Corine Land Cover</li>
-<li>Lista Roja Ecosistemas</li>
-<li>Región Biótica</li>
-<li>Biomas</li>
-<li>Bosque Seco Tropical</li>
-<li>Páramos</li>
-<li>Humedales</li>
-</ol>
-</div>
-<div id="manejo" class="section level3">
-<h3>Manejo</h3>
-<ol style="list-style-type: decimal">
-<li>Areas Protegidas</li>
-<li>Areas Colectivas</li>
-<li>Manejo Especial</li>
-<li>Factor de Compensación</li>
-</ol>
-</div>
-<div id="especies" class="section level3">
-<h3>Especies</h3>
-<ol style="list-style-type: decimal">
-<li>UICN</li>
-<li>Biomodelos</li>
-<li>GBIF</li>
-</ol>
-</div>
-<div id="índices" class="section level3">
-<h3>Índices</h3>
-<ol style="list-style-type: decimal">
-<li>Superficies y Registro Area ###</li>
-</ol>
+<p>Hice pruebas con diferentes zoans de estudio, los resultados son
+variables en el caso de Backend, devolviendo “error”en algunos casos en
+los los que Biotablero produce información. Utilicé el polígono de
+Bogota (todo el distrito, incluyendo la localidad de Sumapaz para ello).
+Biotablero presenta la infromción en Ha, Backend en kmˆ2. Creo que sería
+mejor utilizar las mismas unidades en ambos casis; ha, sobretodo porque
+landscapemetrics por defecto retonra los resultados en ha.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<table>
+<colgroup>
+<col width="23%" />
+<col width="20%" />
+<col width="25%" />
+<col width="30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Elemento</th>
+<th>Backend</th>
+<th>Biotablero</th>
+<th align="right">Obs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bosques</td>
+<td>IDEAM (1990-2016) Hansen (2000-2018) (anual/% cobertura)</td>
+<td>Hansen Armonizado periódos 5 años</td>
+<td align="right">Agregar Hansen Arm % y 2018-2021</td>
+</tr>
+<tr class="even">
+<td>Integridad bosques</td>
+<td>NA</td>
+<td>Combinación ICE (Hansen et al 2019) y HH-Biotablero</td>
+<td align="right">Agregar a Backend</td>
+</tr>
+<tr class="odd">
+<td>Coberturas</td>
+<td>CLC no funciona</td>
+<td>CLC 2018 Natural/Secundaria/Transformada</td>
+<td align="right">Ver por que no funciona</td>
+</tr>
+<tr class="even">
+<td>Areas Protegidas</td>
+<td>AP not running</td>
+<td>AP</td>
+<td align="right">Ver por que no funciona</td>
+</tr>
+<tr class="odd">
+<td>Páramos</td>
+<td>Páramos 913.948kmˆ2 56.2 %</td>
+<td>Páramos 89240 ha 56.24%</td>
+<td align="right">Ajustar Areas/poligonos. Funciona bien</td>
+</tr>
+<tr class="even">
+<td>Bosque Seco Tropical</td>
+<td>0</td>
+<td>0</td>
+<td align="right">Probar en algun lado con BST</td>
+</tr>
+<tr class="odd">
+<td>Humedales</td>
+<td>error</td>
+<td>75,738 ha 20.02% en PA</td>
+<td align="right">Ver proquye no funciona</td>
+</tr>
+<tr class="even">
+<td>Lista Roja Ecos</td>
+<td>Error</td>
+<td>NA</td>
+<td align="right">ver por que no funciona. Agregar a BT</td>
+</tr>
+<tr class="odd">
+<td>Especies</td>
+<td>Biomodelos 2.257 Especies Incluye lista detallada, no gráficos</td>
+<td>Biomodelos 2226 ademas clas endémicas/ invasoras/amenzadas, vacíos y
+registros observados (ID2)</td>
+<td align="right">Combinar</td>
+</tr>
+<tr class="even">
+<td>Huella Humana</td>
+<td>NA</td>
+<td>Índice Huella Humana Correa-Ayram et al 2020
+Actual/persistencia/Histórico</td>
+<td align="right">Agregar Backend</td>
+</tr>
+<tr class="odd">
+<td>Integridad</td>
+<td>NA</td>
+<td>Combinación ICE (Hansen et al 2019) y HH-Biotablero</td>
+<td align="right">Agregar Backend</td>
+</tr>
+<tr class="even">
+<td>Conectividad Áreas protegidas</td>
+<td>NA</td>
+<td>Calculada del RUNAP</td>
+<td align="right">Agregar Backend</td>
+</tr>
+</tbody>
+</table>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Hansen 2000-2018 (actualizar a 2021) por que termina en 2012 la
+gráfica en algunos casos?</p>
 <p>System Files:</p>
 <p><a href="mailto:ubuntu@ip-172-31-7-208" class="email">ubuntu@ip-172-31-7-208</a>:~$</p>
 <ol style="list-style-type: decimal">
 <li><p>Armonized_msk. Permission denied (possibly it was me who uplodade
 it there, and nothing else happened)</p></li>
 <li><p>dbds: Databases: N1_2000_2002.tif.vat.dbf. don’t know what it
-stands for biome.tif.vat.dbf bioticreg.tif.vat.dbf
-colectrareas.tif.vat.dbf ecouicn.tif.vat.dbf faccomp.tif.vat.dbf. Don’t
-know what it is hum.tif.vat.dbf param.tif.vat.dbf
-protectareas.tif.vat.dbf sma.tif.vat.dbf
+stands for. now i know, for uicn datan biome.tif.vat.dbf
+bioticreg.tif.vat.dbf colectrareas.tif.vat.dbf ecouicn.tif.vat.dbf
+faccomp.tif.vat.dbf. Don’t know what it is hum.tif.vat.dbf
+param.tif.vat.dbf protectareas.tif.vat.dbf sma.tif.vat.dbf
 tropdryforest.tif.vat.dbf</p></li>
 <li><p>others: ecochange, test polygons</p></li>
 <li><p>Plumber. The importat setup and pricessing scripts and routines
 are here</p></li>
-<li><p>snap: Emacs Good to know. I don’t remember if it was me who put
-it here or if it already was here.</p></li>
-<li><p>ssd. Some messages and images for the shiny applciation . Not too
+<li><p>snap: Emacs. I think i added this.</p></li>
+<li><p>ssd. Some messages and images for the shiny application . Not too
 important, even less for running anything.</p></li>
-<li><p>SAhiny server deb. Don’t know waht it does and how it
-works.</p></li>
+<li><p>Shiny server deb. Don’t know yet how it works.</p></li>
 </ol>
 <p>Root directory: <a href="mailto:ubuntu@ip-172-31-7-208" class="email">ubuntu@ip-172-31-7-208</a>:/data$: downloaded data fron
 Ivan’s cloud storage. Have not been able to know how to put data
 there/or if i need to change the source.</p>
-<p>temR: temporary files. Don’t know if we have to delete them cd rli
-cd</p>
-<p>En esteThis is an <a href="http://rmarkdown.rstudio.com">R
-Markdown</a> Notebook. When you execute code within the notebook, the
-results appear beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within
-the chunk or by placing your cursor inside it and pressing
-<em>Cmd+Shift+Enter</em>.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
-toolbar or by pressing <em>Cmd+Option+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and
-output will be saved alongside it (click the <em>Preview</em> button or
-press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the
-editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not
-run any R code chunks. Instead, the output of the chunk when it was last
-run in the editor is displayed.</p>
+<p>temR: temporary files. Check if this needs to be cleaned <a href="mailto:ubuntu@ip-172-31-7-208" class="email">ubuntu@ip-172-31-7-208</a>:/data/rasterLayers$ raster
+layers of most of the metrics. <a href="mailto:ubuntu@ip-172-31-7-208" class="email">ubuntu@ip-172-31-7-208</a>:/data/singleLayers$ seems to be
+similar but as vector.</p>
 <!-- rnb-text-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQmlvdGFibGVybyBBc3Nlc3NlbnQiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KRWwgb2JqZXRpdm8gZGUgZXN0ZSB0cmFiYWpvIGVzIGFuYWxpemFyIGN1YWxlcyBkZSBsYXMgc2FsaWRhcyBncsOhZmljYXMgcXVlIHByb2R1Y2UgYmlvdGFibGVybyBzb24gY29tcGF0aWJsZXMgY29uIGxhcyBkZSBCYWNrZW5kIHNpbiBuZWNlc2lkYWQgZGUgYWdyZWdhciBkYXRvcyBudWV2b3MuICAKRXZhbHVhY2nDs24gZGUgbGFzIHNhbGlkYXMgZGUgQmlvdGFibGVybyB5IGVsIEJhY2tlbmJkOgoKMS4gRW52w61hciBww6lyZGlkYSBkZSBCb3NxdWUuIERvbmUuIFJlcHJveWVjdGFkbyB5IGFsaWVuYWRvIGNvbiBsbyBkZW3DoXMgCgoyLiBOdWV2YXMgc2FsaWRhcyBkZSBkYXRvcyBxdWUgcHVlZGFuIHJlcHJlc2VudGFyc2UgbcOhcyBmw6FjaWwgZW4gQmlvdGFibGVybwoKMy4gQ29uc3VsdGFzIHBlcm9zbmFsaXphZGFzLlF1ZSB0aXBvIGRlIGNvbnN1bHRhcyBzZSBwdWVkZW4gaGFjZXI/Cgo0LiBCaW90YWJsZXJvIHRpZW5lIMOhcmVhcyBwcmVkZWZpbmlkYXMsIHBlcm8gbm9zb3Ryb3MgcXVlcmVtb3MgYXJlYXMgY3VzdG9tIAoKNS4gUXVlIGluZGljYWRvcmVzIHNlIHBldWRlbiB1c2FyIHBhcmEgYW5hbGl6YXIgZXNhIGluZm9ybWFjacOzbj8KCgojIyBTYWxpZGFzIGRlIGRhdG9zLgoKCgojIyMgRWNvc2lzdGVtYXMKCjEuIEJvc3F1ZXMKICBIYW5zZW4gMjAwMC0yMDE4IChhY3R1YWxpemFyIGEgIDIwMjEpIHBvciBxdWUgY2FyYWpvcyB0ZW1yaW9uYSBlbiAyMDEyIGxhIGdyw6FmaWNhPwogIElERUFNICgxOTkwLTIwMTYpIChhZ3JlZ2FyIGxvcyBudWV2b3MgcXVlIHRlbmVtb3MpCjIuIENvcmluZSBMYW5kIENvdmVyCjMuIExpc3RhIFJvamEgRWNvc2lzdGVtYXMKNC4gUmVnacOzbiBCacOzdGljYSAKNS4gQmlvbWFzCjYuIEJvc3F1ZSBTZWNvIFRyb3BpY2FsCjcuIFDDoXJhbW9zCjguIEh1bWVkYWxlcwoKIyMjIE1hbmVqbwoxLiBBcmVhcyBQcm90ZWdpZGFzCjIuIEFyZWFzIENvbGVjdGl2YXMKMy4gTWFuZWpvIEVzcGVjaWFsCjQuIEZhY3RvciBkZSBDb21wZW5zYWNpw7NuCgojIyMgRXNwZWNpZXMKMS4gVUlDTiAKMi4gQmlvbW9kZWxvcwozLiBHQklGCgojIyMgw41uZGljZXMKCjEuIFN1cGVyZmljaWVzIHkgUmVnaXN0cm8gCkFyZWEKIyMjIAoKClN5c3RlbSBGaWxlczoKCnVidW50dUBpcC0xNzItMzEtNy0yMDg6fiQgCgoxLiBBcm1vbml6ZWRfbXNrLiBQZXJtaXNzaW9uIGRlbmllZCAocG9zc2libHkgaXQgd2FzIG1lIHdobyB1cGxvZGFkZSBpdCB0aGVyZSwgYW5kIG5vdGhpbmcgZWxzZSBoYXBwZW5lZCkKMi4gZGJkczogRGF0YWJhc2VzOiBOMV8yMDAwXzIwMDIudGlmLnZhdC5kYmYuIGRvbid0IGtub3cgd2hhdCBpdCBzdGFuZHMgZm9yCiAgYmlvbWUudGlmLnZhdC5kYmYgCiAgYmlvdGljcmVnLnRpZi52YXQuZGJmCiAgY29sZWN0cmFyZWFzLnRpZi52YXQuZGJmCiAgZWNvdWljbi50aWYudmF0LmRiZgogIGZhY2NvbXAudGlmLnZhdC5kYmYuIERvbid0IGtub3cgd2hhdCBpdCBpcwogIGh1bS50aWYudmF0LmRiZgogIHBhcmFtLnRpZi52YXQuZGJmCiAgcHJvdGVjdGFyZWFzLnRpZi52YXQuZGJmCiAgc21hLnRpZi52YXQuZGJmCiAgdHJvcGRyeWZvcmVzdC50aWYudmF0LmRiZgoKMy4gb3RoZXJzOiBlY29jaGFuZ2UsIHRlc3QgcG9seWdvbnMKNC4gUGx1bWJlci4gVGhlIGltcG9ydGF0IHNldHVwIGFuZCBwcmljZXNzaW5nIHNjcmlwdHMgYW5kIHJvdXRpbmVzIGFyZSBoZXJlIAo1LiBzbmFwOiBFbWFjcyBHb29kIHRvIGtub3cuIEkgZG9uJ3QgcmVtZW1iZXIgaWYgaXQgd2FzIG1lIHdobyBwdXQgaXQgaGVyZSBvciBpZiBpdCBhbHJlYWR5IHdhcyBoZXJlLiAKNi4gc3NkLiBTb21lIG1lc3NhZ2VzIGFuZCBpbWFnZXMgZm9yIHRoZSBzaGlueSBhcHBsY2lhdGlvbiAuIE5vdCB0b28gaW1wb3J0YW50LCBldmVuIGxlc3MgZm9yIHJ1bm5pbmcgYW55dGhpbmcuCjcuIFNBaGlueSBzZXJ2ZXIgZGViLiBEb24ndCBrbm93IHdhaHQgaXQgZG9lcyBhbmQgaG93IGl0IHdvcmtzLgoKClJvb3QgZGlyZWN0b3J5OiB1YnVudHVAaXAtMTcyLTMxLTctMjA4Oi9kYXRhJDogZG93bmxvYWRlZCBkYXRhIGZyb24gSXZhbidzIGNsb3VkIHN0b3JhZ2UuIEhhdmUgbm90IGJlZW4gYWJsZSB0byBrbm93IGhvdyB0byBwdXQgZGF0YSB0aGVyZS9vciBpZiBpIG5lZWQgdG8gY2hhbmdlIHRoZSBzb3VyY2UuCgp0ZW1SOiB0ZW1wb3JhcnkgZmlsZXMuIERvbid0IGtub3cgaWYgd2UgaGF2ZSB0byBkZWxldGUgdGhlbSAKY2QgcmxpCmNkIAoKCkVuIGVzdGVUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiAKClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDbWQrU2hpZnQrRW50ZXIqLiAKCmBgYHtyfQpwbG90KGNhcnMpCmBgYAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkNtZCtPcHRpb24rSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkNtZCtTaGlmdCtLKiB0byBwcmV2aWV3IHRoZSBIVE1MIGZpbGUpLiAKClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4KCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQmlvdGFibGVyby1CYWNrZW5kIFBhcmFsbGVsIEFzc2Vzc21lbnQiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KQW5hbGl6YXIgY3VhbGVzIGRlIGxhcyBzYWxpZGFzIGdyw6FmaWNhcy10YWJ1bGFyZXMgcXVlIHByb2R1Y2UgYmFja2VuZCBzb24gIGNvbXBhdGlibGVzIGNvbiBsYXMgZGUgQmlvdGFibGVybyBzaW4gbmVjZXNpZGFkIGRlIG5lY2VzaWRhZCBkZSBhZ3JlZ2FyIGRhdG9zIG51ZXZvcy4gIApFdmFsdWFjacOzbiBkZSBsYXMgc2FsaWRhcyBkZSBCaW90YWJsZXJvIHkgZWwgQmFja2VuZDoKCjEuIEVudsOtYXIgcMOpcmRpZGEgZGUgQm9zcXVlLiBEb25lLiBSZXByb3llY3RhZG8geSBhbGluZWFkbyBjb24gZWwgY3JzIGVzdMOhbmRhcgpwcmogPC0gIitwcm9qPXRtZXJjICtsYXRfMD00LjU5NjIwMDQxNyArbG9uXzA9LTc0LjA3NzUwNzkxNzAwMDAxICtrPTEgK3hfMD0xMDAwMDAwICt5XzA9MTAwMDAwMCArZWxscHM9R1JTODAgK3VuaXRzPW0gK25vX2RlZnMiCgoyLiBOdWV2YXMgc2FsaWRhcyBkZSBkYXRvcyBxdWUgcHVlZGFuIHJlcHJlc2VudGFyc2UgbcOhcyBmw6FjaWwgZW4gQmlvdGFibGVybwoKMy4gQ29uc3VsdGFzIHBlcnNvbmFsaXphZGFzLlF1ZSB0aXBvIGRlIGNvbnN1bHRhcyBzZSBwdWVkZW4gaGFjZXI/Cgo0LiBCaW90YWJsZXJvIHRpZW5lIMOhcmVhcyBwcmVkZWZpbmlkYXMsIGJhY2tlbmQgYWNlcHRhIMOhcmVhcyBkZWZpbmlkYXMgcG9yIGVsIHVzdWFyaW8gKGxpbWl0YW50ZTogc3VwZXJmaWNpZSBtw6F4aW1hIDUuMDAwIGtty4YyKSAKCjUuIFF1ZSBpbmRpY2Fkb3JlcyBzZSBwdWVkZW4gdXNhciBwYXJhIGFuYWxpemFyIGVzdGEgaW5mb3JtYWNpw7NuPwoKCiMjIFNhbGlkYXMgZGUgZGF0b3MuCgoKIyMjIEVjb3Npc3RlbWFzCgpIaWNlIHBydWViYXMgY29uIGRpZmVyZW50ZXMgem9hbnMgZGUgZXN0dWRpbywgbG9zIHJlc3VsdGFkb3Mgc29uIHZhcmlhYmxlcyBlbiBlbCBjYXNvIGRlIEJhY2tlbmQsIGRldm9sdmllbmRvICJlcnJvciJlbiBhbGd1bm9zIGNhc29zIGVuIGxvcyBsb3MgcXVlIEJpb3RhYmxlcm8gcHJvZHVjZSBpbmZvcm1hY2nDs24uIFV0aWxpY8OpIGVsIHBvbMOtZ29ubyBkZSBCb2dvdGEgKHRvZG8gZWwgZGlzdHJpdG8sIGluY2x1eWVuZG8gbGEgbG9jYWxpZGFkIGRlIFN1bWFwYXogcGFyYSBlbGxvKS4gCkJpb3RhYmxlcm8gcHJlc2VudGEgbGEgaW5mcm9tY2nDs24gZW4gSGEsIEJhY2tlbmQgZW4ga23LhjIuIENyZW8gcXVlIHNlcsOtYSBtZWpvciB1dGlsaXphciBsYXMgbWlzbWFzIHVuaWRhZGVzIGVuIGFtYm9zIGNhc2lzOyBoYSwgc29icmV0b2RvIHBvcnF1ZSBsYW5kc2NhcGVtZXRyaWNzIHBvciBkZWZlY3RvIHJldG9ucmEgbG9zIHJlc3VsdGFkb3MgZW4gaGEuIAoKYGBge3IgdGFibGUyLCBlY2hvPUZBTFNFLCBtZXNzYWdlPUZBTFNFLCB3YXJuaW5ncz1GQUxTRSwgcmVzdWx0cz0nYXNpcyd9CnRhYmwgPC0iCnwgRWxlbWVudG8gICAgICB8ICAgICBCYWNrZW5kICB8IEJpb3RhYmxlcm8gIHxPYnMgfAp8LS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS06fAp8IEJvc3F1ZXN8IElERUFNICgxOTkwLTIwMTYpICBIYW5zZW4gKDIwMDAtMjAxOCkgKGFudWFsLyUgY29iZXJ0dXJhKXwgSGFuc2VuIEFybW9uaXphZG8gcGVyacOzZG9zIDUgYcOxb3MgIHwgQWdyZWdhciBIYW5zZW4gQXJtICUgeSAyMDE4LTIwMjEgCnwgSW50ZWdyaWRhZCBib3NxdWVzIHwgTkEgfCBDb21iaW5hY2nDs24gSUNFIChIYW5zZW4gZXQgYWwgMjAxOSkgeSBISC1CaW90YWJsZXJvIHwgQWdyZWdhciBhIEJhY2tlbmQgfAp8IENvYmVydHVyYXMgfENMQyBubyBmdW5jaW9uYSAgfCBDTEMgMjAxOCBOYXR1cmFsL1NlY3VuZGFyaWEvVHJhbnNmb3JtYWRhfCAgVmVyIHBvciBxdWUgbm8gZnVuY2lvbmEgfAp8IEFyZWFzIFByb3RlZ2lkYXN8IEFQIG5vdCBydW5uaW5nfCBBUCB8IFZlciBwb3IgcXVlIG5vIGZ1bmNpb25hIHwKfCBQw6FyYW1vcyB8UMOhcmFtb3MgOTEzLjk0OGtty4YyIDU2LjIgJSB8UMOhcmFtb3MgODkyNDAgaGEgNTYuMjQlIHwgQWp1c3RhciBBcmVhcy9wb2xpZ29ub3MuIEZ1bmNpb25hIGJpZW4gfAp8IEJvc3F1ZSBTZWNvIFRyb3BpY2FsIHwgMCB8IDAgfCBQcm9iYXIgZW4gYWxndW4gbGFkbyBjb24gQlNUIHwKfCBIdW1lZGFsZXN8IGVycm9yfCA3NSw3MzggaGEgMjAuMDIlIGVuIFBBfCBWZXIgcG9yIHF1ZSBubyBmdW5jaW9uYSB8CnwgTGlzdGEgUm9qYSBFY29zIHwgRXJyb3IgfCBOQSB8IHZlciBwb3IgcXVlIG5vIGZ1bmNpb25hLiBBZ3JlZ2FyIGEgQlQgfAp8IEVzcGVjaWVzIHwgQmlvbW9kZWxvcyAyLjI1NyBFc3BlY2llcyBJbmNsdXllIGxpc3RhIGRldGFsbGFkYSwgbm8gZ3LDoWZpY29zIHwgIEJpb21vZGVsb3MgMjIyNiBFc3BlY2llcy4gQ2xhc2lmaWNhY2nDs24gIGVuZMOpbWljYXMvIGludmFzb3Jhcy9hbWVuemFkYXMsIHZhY8Otb3MgeSAgcmVnaXN0cm9zIG9ic2VydmFkb3MgKElEMikgfCBDb21iaW5hciAgeSB2YWxpZGFyIGRhdGFzZXRzfAp8IEh1ZWxsYSBIdW1hbmEgfCBOQSB8IMONbmRpY2UgSHVlbGxhIEh1bWFuYSBDb3JyZWEtQXlyYW0gZXQgYWwgMjAyMCBBY3R1YWwvcGVyc2lzdGVuY2lhL0hpc3TDs3JpY298IEFncmVnYXIgQmFja2VuZCB8CnwgSW50ZWdyaWRhZCB8IE5BIHwgQ29tYmluYWNpw7NuIElDRSAoSGFuc2VuIGV0IGFsIDIwMTkpIHkgSEgtQmlvdGFibGVybyB8IEFncmVnYXIgQmFja2VuZCB8IAp8IENvbmVjdGl2aWRhZCDDgXJlYXMgcHJvdGVnaWRhcyB8IE5BIHwgQ2FsY3VsYWRhIGRlbCBSVU5BUCB8IEFncmVnYXIgQmFja2VuZCB8CiIKY2F0KHRhYmwpICMgb3V0cHV0IHRoZSB0YWJsZSBpbiBhIGZvcm1hdCBnb29kIGZvciBIVE1ML1BERi9kb2N4IGNvbnZlcnNpb24KYGBgCgoKCiAgSGFuc2VuIDIwMDAtMjAxOCAoYWN0dWFsaXphciBhICAyMDIxKSBwb3IgcXVlICB0ZXJtaW5hIGVuIDIwMTIgbGEgZ3LDoWZpY2EgZW4gYWxndW5vcyBjYXNvcz8KCgoKU3lzdGVtIEZpbGVzOgoKdWJ1bnR1QGlwLTE3Mi0zMS03LTIwODp+JCAKCjEuIEFybW9uaXplZF9tc2suIFBlcm1pc3Npb24gZGVuaWVkIChwb3NzaWJseSBpdCB3YXMgbWUgd2hvIHVwbG9kYWRlIGl0IHRoZXJlLCBhbmQgbm90aGluZyBlbHNlIGhhcHBlbmVkKQoyLiBkYmRzOiBEYXRhYmFzZXM6IE4xXzIwMDBfMjAwMi50aWYudmF0LmRiZi4gZG9uJ3Qga25vdyB3aGF0IGl0IHN0YW5kcyBmb3IuIG5vdyBpIGtub3csIGZvciB1aWNuIGRhdGFuCiAgYmlvbWUudGlmLnZhdC5kYmYgCiAgYmlvdGljcmVnLnRpZi52YXQuZGJmCiAgY29sZWN0cmFyZWFzLnRpZi52YXQuZGJmCiAgZWNvdWljbi50aWYudmF0LmRiZgogIGZhY2NvbXAudGlmLnZhdC5kYmYuIERvbid0IGtub3cgd2hhdCBpdCBpcwogIGh1bS50aWYudmF0LmRiZgogIHBhcmFtLnRpZi52YXQuZGJmCiAgcHJvdGVjdGFyZWFzLnRpZi52YXQuZGJmCiAgc21hLnRpZi52YXQuZGJmCiAgdHJvcGRyeWZvcmVzdC50aWYudmF0LmRiZgoKMy4gb3RoZXJzOiBlY29jaGFuZ2UsIHRlc3QgcG9seWdvbnMKNC4gUGx1bWJlci4gVGhlIGltcG9ydGF0IHNldHVwIGFuZCBwcmljZXNzaW5nIHNjcmlwdHMgYW5kIHJvdXRpbmVzIGFyZSBoZXJlIAo1LiBzbmFwOiBFbWFjcy4gSSB0aGluayBpIGFkZGVkIHRoaXMuIAo2LiBzc2QuIFNvbWUgbWVzc2FnZXMgYW5kIGltYWdlcyBmb3IgdGhlIHNoaW55IGFwcGxpY2F0aW9uIC4gTm90IHRvbyBpbXBvcnRhbnQsIGV2ZW4gbGVzcyBmb3IgcnVubmluZyBhbnl0aGluZy4KNy4gU2hpbnkgc2VydmVyIGRlYi4gRG9uJ3Qga25vdyB5ZXQgaG93IGl0IHdvcmtzLgoKClJvb3QgZGlyZWN0b3J5OiB1YnVudHVAaXAtMTcyLTMxLTctMjA4Oi9kYXRhJDogZG93bmxvYWRlZCBkYXRhIGZyb24gSXZhbidzIGNsb3VkIHN0b3JhZ2UuIEhhdmUgbm90IGJlZW4gYWJsZSB0byBrbm93IGhvdyB0byBwdXQgZGF0YSB0aGVyZS9vciBpZiBpIG5lZWQgdG8gY2hhbmdlIHRoZSBzb3VyY2UuCgp0ZW1SOiB0ZW1wb3JhcnkgZmlsZXMuIENoZWNrIGlmIHRoaXMgbmVlZHMgdG8gYmUgY2xlYW5lZCAKdWJ1bnR1QGlwLTE3Mi0zMS03LTIwODovZGF0YS9yYXN0ZXJMYXllcnMkIHJhc3RlciBsYXllcnMgb2YgIG1vc3Qgb2YgdGhlIG1ldHJpY3MuCnVidW50dUBpcC0xNzItMzEtNy0yMDg6L2RhdGEvc2luZ2xlTGF5ZXJzJCAgc2VlbXMgdG8gYmUgc2ltaWxhciBidXQgYXMgdmVjdG9yLgoK</div>
 
 
 

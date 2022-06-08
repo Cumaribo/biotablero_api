@@ -1,54 +1,54 @@
 ---
-title: "Biotablero Assessent"
+title: "Biotablero-Backend Parallel Assessment"
 output: html_notebook
 ---
-El objetivo de este trabajo es analizar cuales de las salidas gráficas que produce biotablero son compatibles con las de Backend sin necesidad de agregar datos nuevos.  
-Evaluación de las salidas de Biotablero y el Backenbd:
+Analizar cuales de las salidas gráficas-tabulares que produce backend son  compatibles con las de Biotablero sin necesidad de necesidad de agregar datos nuevos.  
+Evaluación de las salidas de Biotablero y el Backend:
 
-1. Envíar pérdida de Bosque. Done. Reproyectado y alienado con lo demás 
+1. Envíar pérdida de Bosque. Done. Reproyectado y alineado con el crs estándar
+prj <- "+proj=tmerc +lat_0=4.596200417 +lon_0=-74.07750791700001 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +units=m +no_defs"
 
 2. Nuevas salidas de datos que puedan representarse más fácil en Biotablero
 
-3. Consultas perosnalizadas.Que tipo de consultas se pueden hacer?
+3. Consultas personalizadas.Que tipo de consultas se pueden hacer?
 
-4. Biotablero tiene áreas predefinidas, pero nosotros queremos areas custom 
+4. Biotablero tiene áreas predefinidas, backend acepta áreas definidas por el usuario (limitante: superficie máxima 5.000 kmˆ2) 
 
-5. Que indicadores se peuden usar para analizar esa información?
+5. Que indicadores se pueden usar para analizar esta información?
 
 
 ## Salidas de datos.
 
 
-
 ### Ecosistemas
 
-1. Bosques
-  Hansen 2000-2018 (actualizar a  2021) por que carajos temriona en 2012 la gráfica?
-  IDEAM (1990-2016) (agregar los nuevos que tenemos)
-2. Corine Land Cover
-3. Lista Roja Ecosistemas
-4. Región Biótica 
-5. Biomas
-6. Bosque Seco Tropical
-7. Páramos
-8. Humedales
+Hice pruebas con diferentes zoans de estudio, los resultados son variables en el caso de Backend, devolviendo "error"en algunos casos en los los que Biotablero produce información. Utilicé el polígono de Bogota (todo el distrito, incluyendo la localidad de Sumapaz para ello). 
+Biotablero presenta la infromción en Ha, Backend en kmˆ2. Creo que sería mejor utilizar las mismas unidades en ambos casis; ha, sobretodo porque landscapemetrics por defecto retonra los resultados en ha. 
 
-### Manejo
-1. Areas Protegidas
-2. Areas Colectivas
-3. Manejo Especial
-4. Factor de Compensación
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <-"
+| Elemento      |     Backend  | Biotablero  |Obs |
+|---------------|-------------|----------------|------------------:|
+| Bosques| IDEAM (1990-2016)  Hansen (2000-2018) (anual/% cobertura)| Hansen Armonizado periódos 5 años  | Agregar Hansen Arm % y 2018-2021 
+| Integridad bosques | NA | Combinación ICE (Hansen et al 2019) y HH-Biotablero | Agregar a Backend |
+| Coberturas |CLC no funciona  | CLC 2018 Natural/Secundaria/Transformada|  Ver por que no funciona |
+| Areas Protegidas| AP not running| AP | Ver por que no funciona |
+| Páramos |Páramos 913.948kmˆ2 56.2 % |Páramos 89240 ha 56.24% | Ajustar Areas/poligonos. Funciona bien |
+| Bosque Seco Tropical | 0 | 0 | Probar en algun lado con BST |
+| Humedales| error| 75,738 ha 20.02% en PA| Ver por que no funciona |
+| Lista Roja Ecos | Error | NA | ver por que no funciona. Agregar a BT |
+| Especies | Biomodelos 2.257 Especies Incluye lista detallada, no gráficos |  Biomodelos 2226 Especies. Clasificación  endémicas/ invasoras/amenzadas, vacíos y  registros observados (ID2) | Combinar  y validar datasets|
+| Huella Humana | NA | Índice Huella Humana Correa-Ayram et al 2020 Actual/persistencia/Histórico| Agregar Backend |
+| Integridad | NA | Combinación ICE (Hansen et al 2019) y HH-Biotablero | Agregar Backend | 
+| Conectividad Áreas protegidas | NA | Calculada del RUNAP | Agregar Backend |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
 
-### Especies
-1. UICN 
-2. Biomodelos
-3. GBIF
 
-### Índices
 
-1. Superficies y Registro 
-Area
-### 
+  Hansen 2000-2018 (actualizar a  2021) por que  termina en 2012 la gráfica en algunos casos?
+
 
 
 System Files:
@@ -56,7 +56,7 @@ System Files:
 ubuntu@ip-172-31-7-208:~$ 
 
 1. Armonized_msk. Permission denied (possibly it was me who uplodade it there, and nothing else happened)
-2. dbds: Databases: N1_2000_2002.tif.vat.dbf. don't know what it stands for
+2. dbds: Databases: N1_2000_2002.tif.vat.dbf. don't know what it stands for. now i know, for uicn datan
   biome.tif.vat.dbf 
   bioticreg.tif.vat.dbf
   colectrareas.tif.vat.dbf
@@ -70,29 +70,14 @@ ubuntu@ip-172-31-7-208:~$
 
 3. others: ecochange, test polygons
 4. Plumber. The importat setup and pricessing scripts and routines are here 
-5. snap: Emacs Good to know. I don't remember if it was me who put it here or if it already was here. 
-6. ssd. Some messages and images for the shiny applciation . Not too important, even less for running anything.
-7. SAhiny server deb. Don't know waht it does and how it works.
+5. snap: Emacs. I think i added this. 
+6. ssd. Some messages and images for the shiny application . Not too important, even less for running anything.
+7. Shiny server deb. Don't know yet how it works.
 
 
 Root directory: ubuntu@ip-172-31-7-208:/data$: downloaded data fron Ivan's cloud storage. Have not been able to know how to put data there/or if i need to change the source.
 
-temR: temporary files. Don't know if we have to delete them 
-cd rli
-cd 
-
-
-En esteThis is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
-
-```{r}
-plot(cars)
-```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+temR: temporary files. Check if this needs to be cleaned 
+ubuntu@ip-172-31-7-208:/data/rasterLayers$ raster layers of  most of the metrics.
+ubuntu@ip-172-31-7-208:/data/singleLayers$  seems to be similar but as vector.
 
