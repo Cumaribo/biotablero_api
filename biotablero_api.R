@@ -1,13 +1,8 @@
 ### Load required libraries
-library(forestChange)
-library(gdalUtils)
-library(rgeos)
-library(rgdal)
-library(raster)
-library(plumber)
-library(foreign)
-library(mongolite)
+packs <- c('forestChange', 'ecochange', 'gdalUtils', 'rgeos', 'rgdal', 'raster', 'plumber', 'foreign', 'mongolite', 'sf')
+install.packages(packs)
 
+sapply(packs, require, character.only = TRUE)
 
 ## Metrics allowed inside the API
 metrics <- c('biome', 'ecouicn', 'faccomp', 'bioticreg', 'tropdryforest', 'param',
@@ -24,9 +19,6 @@ thresholdKm2 <- 75000
 mongoFields <- c("kingdom", "phylum", "class", "order", "family", "genus", "species", 
                  "decimalLatitude", "decimalLongitude", "sortID",
                  "uicn_glob", "cites", "invasive", "endemic")
-
-
-
 
 
 #* @apiTitle BiotableroAPI
@@ -83,7 +75,7 @@ function(pol = NULL){
 }
 
 
-#* List the available stpatial templates
+#* List the available spatial templates
 #* @param templatesPath The path containign the available layers
 #* @get /listTemplates
 function(templatesPath = '/data/templates'){
@@ -113,7 +105,7 @@ function(template = NULL, templatesPath = '/data/templates'){
 #* @param polID The ID of polygon or element from the given layer or spatial extent. Optional in all metrics
 #* @param pol A polygon in format WKT. Requeried in almost all metrics.
 #* @param ebvstat The Essential Biodiversity Variables so be calculated. 'area' or 'all' available 
-#* @param sour The data source to calculate the metric. If metric is 'forest', 'hansen' and 'ideam' are allowed. If metric is 'species', the values 'biomod', 'uicn' and 'records' are allowed.
+#* @param sour The data source to calculate the metric. If metric is 'forest', 'hansen', 'ideam' and 'hansen_armonized' are allowed. If metric is 'species', the values 'biomod', 'uicn' and 'records' are allowed.
 #* @param cellSize The cell size for 'surface' metric. 1, 2, 5, 10, 20, 50, 100, 200, 500 are allowed. Required in 'surface' metric.
 #* @param ebvyear The years to estimate the forest metrics. Requierd in 'forest' metric.
 #* @param ebvporcrange The threshold range values used to consider the forest cover extent in each pixel as a forest. Requierd in 'forest' metric.
@@ -149,12 +141,10 @@ function(metric = NULL, lay = NULL, polID = NULL, pol = NULL,
     stop()
   }
   
-  
   ## Get into the static metrics
   if (metric %in% 'rli') {
     load(file = paste0(dataPath, '/rli/rli.RData'))
   } 
-  
   
   ## Validate polygon if given.
   # Identify if a polygon is into the arguments. If 'pol' is not NULL, should

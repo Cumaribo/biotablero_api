@@ -1,9 +1,6 @@
-library(forestChange)
-library(gdalUtils)
-library(rgeos)
-library(rgdal)
-library(raster)
-library(plumber)
+packs = c('forestChange','ecochange', 'gdalUtils', 'rgeos', 'rgdal', 'raster', 'plumber', 'sf')  
+
+sapply(packs, require, character.only = TRUE)
 
 #* @apiTitle Simple API
 
@@ -58,6 +55,20 @@ function(var = NULL, stat = NULL, lay = NULL, layID = NULL, pol = NULL, sour = N
       
     }
     
+    if (sour == 'hansen_armonized'){
+      
+      ##Cut Colombia IDEAM layers with WKT geometry
+      system.time(gdalwarp(srcfile = '/data/input/forest/IDEAM/tree_col.tif',
+                           dstfile = treeTemp, 
+                           crop_to_cutline = TRUE,
+                           cutline = paste0(tmpF, '.shp'))) # 68
+      
+      system.time(gdalwarp(srcfile = '/data/input/forest/IDEAM/loss_col.tif', 
+                           dstfile = lossTemp, 
+                           crop_to_cutline = TRUE,
+                           cutline = paste0(tmpF, '.shp')))
+      
+    }
     ## Apply EBVmetric
     stk <- stack(treeTemp, lossTemp)
     names(stk) <- c("treecover2000", "lossyear")

@@ -146,11 +146,11 @@ Mover el archivo *hansen.zip*, que está almacenado en la carpeta *"Descargas"*,
 ```{bash, eval=FALSE}
 C:\Users\current_user>cd Downloads
 ```
-Escribir el comando PSCP. Iuncluye la clave .ppk (con ruta si es necesario), el nombre del archivo que se quiere transferir, la dfirección IPv4 de la instancia y la ruta al directorio donde se va a almacenar el archivo:
+Escribir el comando PSCP. Incluye la clave .ppk (con ruta si es necesario), el nombre del archivo que se quiere transferir, la dfirección IPv4 de la instancia y la ruta al directorio donde se va a almacenar el archivo:
 ```{bash, eval=FALSE}
 C:\> pscp -i key_biotablero_prod.ppk hansen.zip ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com:/home/ubuntu/others
 ```
-Para transferir datos entre la instnacia y la máquina local, el procedimiento es el mismo, invirtiendo las rutas:
+Para transferir datos entre la instancia y la máquina local, el procedimiento es el mismo, invirtiendo las rutas:
 ```{bash, eval=FALSE}
 C:\> pscp -i C:\[path]\key_biotablero_prod.ppk ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com:/home/ubuntu/others/hansen.zip
 ```
@@ -169,16 +169,16 @@ Referencia: [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.
 Manipulación del Back End:
 
 
-En el directorio  ubuntu/home/plumber están almacenados los scripts y funciones necesariospara ejecutras el procesamiento del back end, junto con los componentes del docker 
+En el directorio  ubuntu/home/plumber están almacenados los scripts y funciones necesarios para los procesos en el backend, así como los componentes para configurar y ejecutar Docker 
 
-1. biotablero_bash.sh: Archivo Bash de configuración incial de la Instancia.
+1. biotablero_bash.sh: Archivo Bash de configuración incial de la instancia.
 2. main.R: R script de inicio de  BioTablero API
-3. biotablero_api.R: API and indicators functions.
+3. biotablero_api.R: API y funciones indicadoras.
 4. start_mongo_speciesrecords.R: R script para poblar la base de datos de Mongo database
 5. dockerfile: Archivo con instrucciones para compìlar la imagen de BioTablero en el Docker 
 6. docker-compose.yml: configuración de los componentes (BioTablero API, MongoDB, Nginx).
-7. init-mongo.js: crrea al usuariuo de la base de datos Mongo.
-8. nginx.conf: archivo de configuración del  load balancer.
+7. init-mongo.js: crea al usuariuo de la base de datos Mongo.
+8. nginx.conf: archivo de configuración del load balancer.
 9. s3.env: Variables del ambiente para usar el servicio Amazon S3.
 10. forestChange_1.0.tar.gz: Package used in the biotablero_api.R script (*not necessary anymore, update to ecochange*)
 
@@ -189,27 +189,10 @@ Para compilar(build) el Docker, correr esta línea :
 ubuntu@ip-172-31-7-208:~/plumber$ docker-compose build
 ```
 
-# Configuración del Docker
 
+### Instalar programas y configuar el sistema
 
-This steps will set up, download, and launch the Docker containers that will host the API.
-For this procedure we require the following files:
-
-1. biotablero_bash.sh: Bash instructions explained in this document. 
-2. main.R: R script startin API
-3. biotablero_api.R: API and indicators functions.
-4. start_mongo_speciesrecords.R: R script for populate the Mongo database
-5. dockerfile: Instructions for setting-up 'bioablero' docker
-6. docker-compose: Instructions for synconrize and 'biotablero' and 'mongo' docker containers
-7. init-mongo.js: Mongo data base user creation
-
-An extra file ´readme´ contains final detailes required for the API launching.
-The following instructions are contained into ´biotablero_bash.sh´
-
-
-### Install programs and set up the system host
-
-Volumen mount. Make accesible the external space (50GB) required for data storage. The folder will be ´/data´
+Montar unidad de almacenamiento externo. Make accesible the external space (50GB) required for data storage. The folder will be ´/data´
 
 ```{bash, eval=FALSE}
 lsblk
@@ -245,8 +228,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 ### Download compressed datasets
 
 Let's download compressed datasets hosted in the cloud into ´/data´ folder
-
-
 
 #### Species data sets
 
