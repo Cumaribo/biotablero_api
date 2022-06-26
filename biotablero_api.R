@@ -208,7 +208,7 @@ function(template = NA, templatesPath = '/data/templates'){
 function(metric = NA, lay = NA, polID = NA, pol = NA, 
          ebvstat = NA, sour = NA, ebvyear = NA, ebvporcrange = NA,
          spFormat = 'list', spRecordsFields = NA, spRecordsTabulate = NA, 
-         clclevel = NA, cellSize = NA, rasterLayer = FALSE, dataPath = '/data') {
+         clclevel = NA, cellSize = NA, rasterLayer = FALSE, dataPath = '/data'){
   
   # metric = NULL; lay = NULL; polID = NULL; pol = NULL;
   # ebvstat = NULL; sour = NULL; ebvyear = NULL; ebvporcrange = NULL;
@@ -535,8 +535,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       }
     }
     
-    
-    
     ## Get into the crop-like functions for temporal layers: CLC ---------
     if (metric %in% c('clc')){
       if (is.null(clclevel) | is.na(clclevel)){
@@ -708,23 +706,20 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
     }
     
-    
     ## Get into the forest metrics ------
-    if (metric %in% 'forest') { 
+    if (metric %in% 'forest'){ 
       
       if (is.null(ebvstat) | is.null(sour)){
         return(paste0("ERROR: forest metric requiere 'ebvstat' and 'sour' arguments"))
         stop()
       }
-      
       ## Validate parameters
       if (! ebvstat %in% c('area', 'lsm_l_tafc', landscapemetrics::list_lsm(level = 'landscape')$function_name)){
         return(paste0('ERROR: EBVstat "', ebvstat, '" not "area" or "landscape-level metrics'))
         stop()
       }
-      
       if (! sour %in% c('hansen', 'ideam', 'hansen_armonized')){
-        return(paste0('ERROR: Source "', sour, '"not "ideam", "hansen" or "hansen_armonized" for forest source"))
+        return(paste0('ERROR: Source "', sour, '"not "ideam", "hansen" or "hansen_armonized" for "forest source"'))
         stop()
       }
       
@@ -1077,4 +1072,5 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
                                         clclevel = clclevel, ebvyear = ebvyear,
                                         ebvporc = ebvporcrange, dots,
                                         time = paste(timeElapsed, attr(timeElapsed, 'units')) ) ) ))
-}
+  }
+  
