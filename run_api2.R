@@ -23,14 +23,13 @@ aws <- 'ec2-3-137-83-192.us-east-2.compute.amazonaws.com'
 #aws <- 'ec2-3-84-170-26.compute-1.amazonaws.com'
 localDataPath <- '/Users/sputnik/Documents/Biotablero/data'
 
-
 ## Understanding the API
 
 ###################################################################
 ##  > Test function. Get a simple message 
 
-test_local <- biotablero(server = 'local', port = ':8000', endpoint = 'biotablero', printURL = TRUE,
-                         dataPath = localDataPath, metric = 'test')
+test_local <- biotablero(server = 'local', port = ':8000', endpoint = 'biotablero', printURL = TRUE, dataPath = localDataPath, metric = 'test')
+
 (test_aws <- biotablero(server = 'web', webURL = aws, port = ':8000', endpoint = 'biotablero',
                        printURL = TRUE, metric = 'test'))
 
@@ -69,7 +68,7 @@ system.time(ForChange_aws <- biotablero(server = 'web', webURL = aws, port = ':8
                                         endpoint = 'biotablero', metric = 'forest', 
                                         sour = 'hansen', ebvstat = 'forest.ext',
                                         pol = simplePol))
-#http://ec2-3-92-160-103.compute-1.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
+#http://ec2-3-137-83-192.us-east-2.compute.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
 #user  system elapsed 
 #0.05    0.00  191.84 
 
