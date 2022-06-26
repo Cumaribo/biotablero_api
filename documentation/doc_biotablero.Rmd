@@ -192,7 +192,7 @@ ubuntu@ip-172-31-7-208:~/plumber$ docker-compose build
 
 ### Instalar programas y configuar el sistema
 
-Montar unidad de almacenamiento externo. Make accesible the external space (50GB) required for data storage. The folder will be ´/data´
+Montar unidad de almacenamiento externo de 30GB. Esta nueva caropeta esta en The folder will be ´/data´
 
 ```{bash, eval=FALSE}
 lsblk
@@ -202,7 +202,7 @@ sudo mkfs -t xfs /dev/xvdb
 sudo mount /dev/xvdb /data
 ```
 
-Install docker and docker-compose, 7zip and tree.
+Instalar docker, docker-compose, 7zip y tree.
 
 ```{bash, eval=FALSE}
 sudo apt-get update -y
@@ -211,7 +211,7 @@ sudo apt-get install p7zip-full -y
 sudo apt install docker.io -y
 ```
 
-Run Docker commands without sudo prefix. This may require restart the host connection. That's why some docker commands bellow will use ´sudo´
+Ejecutar los comandos de Docker sin **sudo**. Es posible que sea necesario reiniciar la conexión con el hos . That's why some docker commands bellow will use ´sudo´ **Esto no lo entiendo**
 
 ```{bash, eval=FALSE}
 sudo usermod -aG docker ubuntu
@@ -219,19 +219,19 @@ sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
-Download docker-compose
+Download docker-compose (ver si hay versión nueva)
 ```{bash, eval=FALSE}
 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-### Download compressed datasets
+### Descargar los datasets comprimidos
 
-Let's download compressed datasets hosted in the cloud into ´/data´ folder
+Los datasets se almacenan en la carpeta ´/data´.
 
-#### Species data sets
+#### Especies data sets
 
-Biomodelos (Biomod.7z). 6113 species datasets from 1340097 locations (.RData files)
+Biomodelos (Biomod.7z). 6113 species datasets from 1340097 locations (.RData files). **Como actualizamos esto?** 
 
 ```{bash, eval=FALSE}
 sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Qu5H8Z5c91KVjVs_HT_0Qc4ypjwlojLj' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1Qu5H8Z5c91KVjVs_HT_0Qc4ypjwlojLj" -O /data/Biomod.7z && rm -rf /tmp/cookies.txt
@@ -250,7 +250,7 @@ sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=dow
 
 #### Ecosystems
 
-
+This needs to be updated in the cloud server, so everything gets installed and loaded at once!!
 Hansen and IDEAM forest layers (forest.7z). Two .tif layers for forest cover and other two for forest loss year.
 ```{bash, eval=FALSE}
 sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1fK4QnUZi9uluu0vtUZlNlRVYDJFfu_Xc' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1fK4QnUZi9uluu0vtUZlNlRVYDJFfu_Xc" -O /data/forest.7z && rm -rf /tmp/cookies.txt
@@ -262,7 +262,7 @@ Biomes (biome), Biotic regions (bioticreg) and colective areas (colectareas) sha
 sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1mFQLlTjYQRytldLNWNzEflNMW0smNBFp' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1mFQLlTjYQRytldLNWNzEflNMW0smNBFp" -O /data/singleLayers1.7z && rm -rf /tmp/cookies.txt
 ```
 
-
+**También ver si esto se puede / hay con que actualizarlo**
 Contain Tropical dry forest (tropdryforest), Special managment areas (sma), protected areas (protectareas), paramos (params), and wetlands (hum) shapefiles (SingleLayers2.7z).
 
 ```{bash, eval=FALSE}
@@ -364,8 +364,7 @@ sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=dow
 ```
 
 
-
-### Create folders and unzip data
+### Crear directorios y  descomprimir los datos.
 
 Create directories according to API structure
 
