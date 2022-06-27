@@ -22,20 +22,20 @@ prj <- "+proj=tmerc +lat_0=4.596200417 +lon_0=-74.07750791700001 +k=1 +x_0=10000
 
 ### Ecosistemas
 
-Hice pruebas con diferentes zoans de estudio, los resultados son variables en el caso de Backend, devolviendo "error"en algunos casos en los los que Biotablero produce información. Utilicé el polígono de Bogota (todo el distrito, incluyendo la localidad de Sumapaz para ello). 
-Biotablero presenta la infromción en Ha, Backend en kmˆ2. Creo que sería mejor utilizar las mismas unidades en ambos casis; ha, sobretodo porque landscapemetrics por defecto retonra los resultados en ha. 
+Hice pruebas con diferentes zonas de estudio, y el funcionamiento es correcto. Utilicé el polígono de Bogota (todo el distrito, incluyendo la localidad de Sumapaz para ello). 
+Biotablero presenta la información en Ha, Backend en kmˆ2. Creo que sería mejor utilizar las mismas unidades en ambos casos; ha, sobretodo porque landscapemetrics por defecto retonra los resultados en ha. Esto es así porque para backend, se utilizó un sistema propio para calcular áreas. Yo creo que es mejor utiizar landscapemetrics para eso ( y mejorar las salidas, dando información más interesante, por ejemplo pérdidas de conectividad o procesos de fragmentación de los ecosistemas)  
 
 ```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 tabl <-"
 | Elemento      |     Backend  | Biotablero  |Obs |
 |---------------|-------------|----------------|------------------:|
-| Bosques| IDEAM (1990-2016)  Hansen (2000-2018) (anual/% cobertura)| Hansen Armonizado periódos 5 años  | Agregar Hansen Arm % y 2018-2021 
+| Bosques| IDEAM (1990-2016)  Hansen (2000-2018) (anual/% cobertura)| Hansen Armonizado periodos 5 años | Actualizar script y 2018-2021 
 | Integridad bosques | NA | Combinación ICE (Hansen et al 2019) y HH-Biotablero | Agregar a Backend |
-| Coberturas |CLC no funciona  | CLC 2018 Natural/Secundaria/Transformada|  Ver por que no funciona |
-| Areas Protegidas| AP not running| AP | Ver por que no funciona |
+| Coberturas |CLC no funciona  | CLC 2018 Natural/Secundaria/Transformada|  |
+| Areas Protegidas| AP not running| AP |  |
 | Páramos |Páramos 913.948kmˆ2 56.2 % |Páramos 89240 ha 56.24% | Ajustar Areas/poligonos. Funciona bien |
 | Bosque Seco Tropical | 0 | 0 | Probar en algun lado con BST |
-| Humedales| error| 75,738 ha 20.02% en PA| Ver por que no funciona |
+| Humedales| Probar | 75,738 ha 20.02% en PA| Ver por que no funciona |
 | Lista Roja Ecos | Error | NA | ver por que no funciona. Agregar a BT |
 | Especies | Biomodelos 2.257 Especies Incluye lista detallada, no gráficos |  Biomodelos 2226 Especies. Clasificación  endémicas/ invasoras/amenzadas, vacíos y  registros observados (ID2) | Combinar  y validar datasets|
 | Huella Humana | NA | Índice Huella Humana Correa-Ayram et al 2020 Actual/persistencia/Histórico| Agregar Backend |
@@ -45,18 +45,14 @@ tabl <-"
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
 
-
-
-  Hansen 2000-2018 (actualizar a  2021) por que  termina en 2012 la gráfica en algunos casos?
-
+Hansen 2000-2018 (actualizar a  2021) por que  termina en 2012 la gráfica en algunos casos? This is still pending. 
 
 
 System Files:
 
 ubuntu@ip-172-31-7-208:~$ 
 
-1. Armonized_msk. Permission denied (possibly it was me who uplodade it there, and nothing else happened)
-2. dbds: Databases: N1_2000_2002.tif.vat.dbf. don't know what it stands for. now i know, for uicn datan
+1. dbds: Databases: N1_2000_2002.tif.vat.dbf. don't know what it stands for. now i know, for uicn datan
   biome.tif.vat.dbf 
   bioticreg.tif.vat.dbf
   colectrareas.tif.vat.dbf
@@ -71,17 +67,12 @@ ubuntu@ip-172-31-7-208:~$
 3. others: ecochange, test polygons
 4. Plumber. The important setup and processing scripts and routines are here. The backend "lives here". Eveit 
 5. snap: Emacs. I think i added this. 
-6. ssd. Some messages and images for the shiny application . Not too important, even less for running anything. It is indeed important. Here is where the interaction with the user of the app takes place. The "site" is here.  
-7. Shiny server deb. Don't know yet how it works.
+6. ssd. It is indeed important. Here is where the interaction with the user of the app takes place. The "site" is here.  
+7. Shiny server deb. Don't know yet how it works. But, important was to edit the app.R file.
 
 
 Root directory: ubuntu@ip-172-31-7-208:/data$: downloaded data fron Ivan's cloud storage. Have not been able to know how to put data there/or if i need to change the source.
-Uoppdate june 26 2022. It can be moved using sudo. I need to be in the cloud with everything together. 
+Update june 26 2022. It can be moved using **sudo**. However, it would be better to put everything in the cloud storage and update from by running biotablero.sh.
 
 
-
-I know waht it is here. The emprary folders where a lot of the opertiuons are run. don't worry about this anymore. 
-temR: temporary files. Check if this needs to be cleaned 
-ubuntu@ip-172-31-7-208:/data/rasterLayers$ raster layers of  most of the metrics.
-ubuntu@ip-172-31-7-208:/data/singleLayers$  seems to be similar but as vector.
 
