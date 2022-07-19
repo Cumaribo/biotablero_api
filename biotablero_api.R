@@ -13,7 +13,7 @@ suppressWarnings(suppressPackageStartupMessages(library(gdalUtilities)))
 suppressWarnings(suppressPackageStartupMessages(library(rasterDT)))
 # suppressWarnings()
 
-#This first thing can be implemented better using landscape metrics) . We can get areas in ha 
+#This first thing can be implemented better using landscape metrics. We can get areas in ha 
 # And run easier, more interesting analysis that the ones made here. In fact, it might 
 # be possible to visualize something, using some functions on landscapemetrics.
 
@@ -747,7 +747,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         }
       } else if (sour == 'hansen_armonized'){
         if(! all(ebvyearnum %in% 2000:2021)){
-          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hanse_armonized" source'))
+          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen_armonized" source'))
           stop()
         }
       
@@ -834,7 +834,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         ## Use ForestChange package ## update to ecochange 
         stk <- stack(treeTemp, maskTemp) 
         names(stk) <- c("treecover2000", "lossyear")
-        
+        ###### Here, subsitute FCMask with ecochange::echanges !!!!
         fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
                                        perc = eval(parse(text = ebvporcrange)), pr.utm = FALSE)
         fcmetric <- forestChange::EBVmetric(fcmask, what = ebvstat)

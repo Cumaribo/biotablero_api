@@ -26,11 +26,12 @@ Instucciones para acceder, configurar, dar mantenimiento, integrar y actualizar 
 BioTablero consta de tres componentes principales que interactúan para recibir, procesar y retornar resultados de consultas de indicadores de biodiversidad, incluyendo las  [**\textcolor{blue}{Variables Esenciales de la Biodiversidad -EBVs}**](https://appliedsciences.nasa.gov/what-we-do/projects/activities-advance-build-and-deliver-remote-sensing-supported-species)  para un área geográfica determinada (*averiguar los términos técnicos correctos para estas operaciones*) 
 
 ## Estructura de SSD-BioTablero  
+1. Backend
+2. Frontend
+3. Docker
 
-Hay tres componentes básicos del SSD asociado a ***BioTablero***
-
-1. Un servidor virtual; *Instance* alojado en la nube de [**\textcolor{blue}{Amazon Web Services -AWS}**](https://aws.amazon.com/), denominado   **Back End**.  En el Backend se reciben y procesan las consultas   enviadas desde el front end por el usuario, y los resultados son devueltos para ser desplegados. 
-2. Una Interfaz gráfica (*Front end*) desarrollada en Shiny, que es la que interactúa con el usuario, recibe las solicitudes y despliega los resultados enviados pòr el back end [**\textcolor{blue}{BioTablero}**](http://biotablero.humboldt.org.co/).
+1. El backend es una *Instance* alojado en [**\textcolor{blue}{Amazon Web Services -AWS}**](https://aws.amazon.com/); el **Back End**.  Recibe y procesa las consultas  enviadas desde el front end por el usuario, y envia los resultados de vueelta al front end para ser desplegados. 
+2. Una interfaz gráfica (*Front end*) desarrollada en Shiny, que es la que interactúa con el usuario, recibe las solicitudes y despliega los resultados enviados pòr el back end [**\textcolor{blue}{BioTablero}**](http://biotablero.humboldt.org.co/).
 
 3. Un contenedor o [**\textcolor{blue}{Docker}**](https://www.docker.com/resources/what-container).  El Docker  empaqueta el código y sus dependencias y como en una sola unidad de software, que permite crear procesos en paralelo, distribuior las cargas y atender múltiples solicitudes simultáneas.
 
@@ -44,7 +45,7 @@ El backend es una instancia EC2 alojada en Amazon Web Services que corre en la d
 Al acceder a la cuenta de Biotablero en [**\textcolor{blue}{Amazon Web Services}**](https://aws.amazon.com/)  es posible revisar las especificaciones, la configuración y el estado operacional de la(s) instancia(s). Las credenciales de acceso son:
 
 -Username: biotablerohumboldt@gmail.com
--Password: 2019!Biotablero
+-Password: XXXXXXXX
 
 El vínculo **Instances** muestra las instancias disponibles.  [ventana](insertar imagen acá) 
 
@@ -88,7 +89,7 @@ ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com
 En la página web de [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.edu/how-to/data-recipes/connect-to-ec2-with-ssh-mac-os-x/) incluye u n tutoprial para establecer la conexión con MacOS.
 
 
-Cuando la conexión es  establecida exitosamente, la línea de comando despliega un mennsaje  similar a este: 
+Cuando la conexión es establecida exitosamente, la línea de comando despliega un mensaje  similar a este: 
 [instertar imagen](ya.se) *eventualmente agregar caption*
 
 ### Organización (pensar un nombre adecuado)
@@ -141,12 +142,12 @@ C:\> pscp -i yourkey.ppk yourfilename ubuntu@public_DNS:/home/ubuntu/
 #### Ejemplo: 
 
 Mover el archivo *hansen.zip*, que está almacenado en la carpeta *"Descargas"*, al directorio */home/ubuntu/others* de la Instance.
-1. Mover el arcchivo *key_biotablero_prod.ppk* a la carpeta *Descargas* o especificar la ruta completa al mismo
+1. Mover el archivo *key_biotablero_prod.ppk* a la misma carpeta *Descargas* o especificar la ruta completa al mismo.
 2. En CMD navegar a la carpeta *Descaragas*: 
 ```{bash, eval=FALSE}
 C:\Users\current_user>cd Downloads
 ```
-Escribir el comando PSCP. Incluye la clave .ppk (con ruta si es necesario), el nombre del archivo que se quiere transferir, la dfirección IPv4 de la instancia y la ruta al directorio donde se va a almacenar el archivo:
+Escribir el comando PSCP. Incluye la clave .ppk (con ruta si es necesario), el nombre del archivo que se va transferir, la dfirección IPv4 de la instancia y la ruta al directorio donde se va a almacenar el archivo:
 ```{bash, eval=FALSE}
 C:\> pscp -i key_biotablero_prod.ppk hansen.zip ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com:/home/ubuntu/others
 ```
