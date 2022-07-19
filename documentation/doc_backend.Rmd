@@ -65,10 +65,13 @@ ubuntu@ip-172-31-7-208:~$
   tropdryforest.tif.vat.dbf
 
 3. others: ecochange, test polygons
-4. Plumber. The important setup and processing scripts and routines are here. The backend "lives here". Eveit 
-5. snap: Emacs. I think i added this. 
-6. ssd. It is indeed important. Here is where the interaction with the user of the app takes place. The "site" is here.  
-7. Shiny server deb. Don't know yet how it works. But, important was to edit the app.R file.
+4. Plumber. The important setup and processing scripts and routines are here. The backend "lives here".
+  a. biotablero_api.R this runs the fucntions
+  b. main. Set the path
+  c. app.r shiny app
+6. snap: Emacs. I think i added this. 
+7. ssd. It is indeed important. Here is where the interaction with the user of the app takes place. The "site" is here.  
+8. Shiny server deb. Don't know yet how it works. But, important was to edit the app.R file.
 
 
 Root directory: ubuntu@ip-172-31-7-208:/data$: downloaded data fron Ivan's cloud storage. Have not been able to know how to put data there/or if i need to change the source.
