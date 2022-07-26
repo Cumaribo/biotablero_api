@@ -101,7 +101,7 @@ sudo cp /home/vmuser/gedivis /srv/shiny-server/gedivis2 -R
 
 ## Run container
 docker exec -it biotablero_biotablero-api. /bin/bash  
-# hit tab after the period (.) to get a particular docker name, sicne has a hash tag 
+# hit tab after the period (.) to get a particular docker name, since has a hash tag 
 
 ## Check logs
 docker service logs biotablero_biotablero-api
