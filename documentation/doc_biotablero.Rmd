@@ -1,0 +1,471 @@
+---
+title: "BioTablero"
+subtitle: "Configuración, despliegue y actualización"
+author: 
+ - Jerónimo Rodríguez-Escobar^[Temple University, jeronimo.rodriguez@temple.edu]
+ - Víctor Hugo Gutiérrez-Vélez^[Temple University]
+ - Wilson Lara-Henao^[Temple University]
+ - Iván González-Garzón^[Northern Arizona University]
+affiliation: Temple University
+bibliography: "/Users/sputnik/OneDrive - Temple University/Documentacion_Armonizacion/references_arm.bib"
+date: "`r Sys.Date()`"
+output:   
+ pdf_document:
+ toc: true
+ number_sections: true
+ fig_caption: yes  
+ extra_dependencies: ["float"]      
+    #includes:  
+     #in_header: header.tex
+---
+
+# Introducción 
+
+Instucciones para acceder, configurar, dar mantenimiento, integrar y actualizar los componentes del SSD integrado a [**\textcolor{blue}{BioTablero}**](http://biotablero.humboldt.org.co/). *Incluir referencia a aspectos conceptuales **ver después como hago referencia a eso, debería haber un paper*:
+
+BioTablero consta de tres componentes principales que interactúan para recibir, procesar y retornar resultados de consultas de indicadores de biodiversidad, incluyendo las  [**\textcolor{blue}{Variables Esenciales de la Biodiversidad -EBVs}**](https://appliedsciences.nasa.gov/what-we-do/projects/activities-advance-build-and-deliver-remote-sensing-supported-species)  para un área geográfica determinada (*averiguar los términos técnicos correctos para estas operaciones*) 
+
+## Estructura de SSD-BioTablero  
+1. Backend
+2. Frontend
+3. Docker
+
+1. El backend es una *Instance* alojado en [**\textcolor{blue}{Amazon Web Services -AWS}**](https://aws.amazon.com/); el **Back End**.  Recibe y procesa las consultas  enviadas desde el front end por el usuario, y envia los resultados de vueelta al front end para ser desplegados. 
+2. Una interfaz gráfica (*Front end*) desarrollada en Shiny, que es la que interactúa con el usuario, recibe las solicitudes y despliega los resultados enviados pòr el back end [**\textcolor{blue}{BioTablero}**](http://biotablero.humboldt.org.co/).
+
+3. Un contenedor o [**\textcolor{blue}{Docker}**](https://www.docker.com/resources/what-container).  El Docker  empaqueta el código y sus dependencias y como en una sola unidad de software, que permite crear procesos en paralelo, distribuior las cargas y atender múltiples solicitudes simultáneas.
+
+# Configuración y acceso al Backend
+
+El backend es una instancia EC2 alojada en Amazon Web Services que corre en la diostribución Ubuntu de Linux. La configuración inicial de las  instancias, las opciones de seguridady la adición de unidades de almacenamiento y , se describe en detalle en [esta presentación](https://docs.google.com/presentation/d/1qO__YB1htpJsM-TDWzCb9UFaq5wQCcmB9meC-KzNAXk/edit?usp=sharing).
+
+
+# Acceso a AWS
+
+Al acceder a la cuenta de Biotablero en [**\textcolor{blue}{Amazon Web Services}**](https://aws.amazon.com/)  es posible revisar las especificaciones, la configuración y el estado operacional de la(s) instancia(s). Las credenciales de acceso son:
+
+-Username: biotablerohumboldt@gmail.com
+-Password: XXXXXXXX
+
+El vínculo **Instances** muestra las instancias disponibles.  [ventana](insertar imagen acá) 
+
+[**\textcolor{blue}{instanceID}**], muestra detalles adicionales de las instancias. La dirección  pública (Public IPv4 DNS); ej  
+```{bash, eval= FALSE}
+ec2-3-21-142-154.us-east-2.compute.amazonaws.com  
+```
+y claves de acceso; *key_biotablero_prod.ppk* (**Windows**) ó  *key_biotablero_prod.pem* (**Linux/MacOS**) son necesarios para establecer la conexión SSH/PuTTY-SSH. 
+
+## Establecer conexión SSH con el servidor virtual
+
+
+Una vez las instancias están montadas y activas en AWS, el acceso al backend se realiza mediante SSH (Secure Socket Shell) desde la línea de comando de Linux/MacOS o utilizando  [PuTTY],(https://www.sussex.ac.uk/its/services/software/owncomputer/putty), una implementación de SSH para  Windows.  
+
+[**\textcolor{green}{Nota: será necesario describir como se agregan unidades de almacenamiento adicional o con las instrucciones en el ppt es suficiente?}**]
+
+**Aún no se si es mejor exportar esto cmo html o pdf. probablemente lo primero, pero por ahora dejemos así. En todo caso si cambio eso, la sintaxis para cambiar el color de la fuente es de  CSS: span style="color: red;">text</span>** 
+
+### Windows:
+
+1. Descargar e instalar [**\textcolor{blue}{PuTTY}**](putty.org) 
+2. Arrancar PuTTY y marcar las opciones como se indica en las imágenes, incluyendo la direccón IPv4 y agregando el archivo con la clave de acceso (key_biotablero_prod.ppk) 
+3. Al establecerse la conexión, lo primero que despliega la línea de comando es  **login as:**; escribir *ubuntu*.
+*nota, probar si poniendo ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com  se evita ese último paso*  
+
+### Linux/MacOS
+
+1. Abrir una ventana de la terminal en la carpeta donde está almacenada la clave .ppk o navegar por la línea de comando hasta dicha ubicación.
+2. Pegar una línea con la siguiente estructura: 
+```{bash, eval=FALSE}
+ssh i- "key_instance.pem" username@IPv4
+```
+
+Para las instancias de BioTablero se ve así (una sola línea):
+
+```{bash, eval= FALSE}
+ssh -i "key_biotablero_prod.pem"
+ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com
+```
+
+En la página web de [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.edu/how-to/data-recipes/connect-to-ec2-with-ssh-mac-os-x/) incluye u n tutoprial para establecer la conexión con MacOS.
+
+
+Cuando la conexión es establecida exitosamente, la línea de comando despliega un mensaje  similar a este: 
+[instertar imagen](ya.se) *eventualmente agregar caption*
+
+### Organización (pensar un nombre adecuado)
+
+La ílnea de comando es la estándar de Linux. Algunos de los comandos más comunes pueden ser consultados [**\textcolor{blue}{acá}**](https://www.guru99.com/linux-commands-cheat-sheet.html). 
+
+
+La carpeta /home/ubuntu/plumber contiene los scripts y archivos necesarios para correr los procesos en el backend, distribuir las cargas y los componentes del docker. Los scripts pueden ser abiertos y editados directamente con un editor  como EMACS o VIM, o editados localmente y cargados a la instancia, o actualizando el archivo biotablero_bash.sh.
+
+### Almacenamiento
+
+La información que se va a consultar es almacendada en la unidad externa (revisar como se monta en una sección anterior) se almacena en la carpeta /data, que incluye (hoy)"`r Sys.Date()`" los siguientes datasets:
+
+
+## Transferencia de datos entre las Instances y la máquina local.
+
+
+## Windows
+
+Dos métodos diferentes:
+
+- Utilizando una interfaz gráfica; WinSCP,  arrastrar y copiar archivos directamente, similar al adminsotrador de archivos de Windows *nota: no lo he hecho aún, lo tengo que probar en la compu del lab pero estoy seguro de qe funciona*
+
+- Utilizando Copia segura de PuTTY (PSCP) desde la línea de comando de Windows (cmd).
+
+### WinSCP
+
+1. Bajar e instalar [**\textcolor{blue}{WinSCP}**](https://winscp.net/eng/download.php) manteniendo las opciones de instalación por defecto.
+2. Iniciar WinSCP.
+3. En la ventana *Login*, click en *New Site*
+4. En el campo *Host Name*, pegar la direccion **IPv4**
+5. En el campo *User name*, escribir *ubuntu*.
+6. Hacer click en el botón **Advanced**
+7. En SSH, hacer clik sobre **Authentication** 
+8. En el campo *Private key file*, click sobre el botón **...** y navegar a la carpeta donde la clave de PuTTY (archivo .ppk) está alamcenada, seleccionarlo y aceptar **OK**
+
+*Está configuración puede ser guardada con el botón* **Save** *para usos posteriores.*
+
+9. Dar click sobre el botón **Login**. Se va a desplegar una ventana preguntando si está segure de quere conectarse a un servidor desconocido. **Aceptar**.
+10. Si la conexión se establece exitosamente, la ventana WinSCP tiene dos páneles. El izquierdo tiene el sistema de archivos local, el derecho el de la Instancia. Para copiar los archivos basta con hacer *drag and drop*.
+
+### PuTTY Secure Copy (PSCP)
+
+1. Iniciar Windows Command Line (CMD)
+2. Asegurarse de que la clave **PuTTy Private Key** (.ppk) esté guardada en la misma carpeta de trabajo o especificar la ruta a la misma. 
+3. El comando para trasferir el archivos hacia la instnace tiene esta estructura:
+```{bash, eval=FALSE}
+C:\> pscp -i yourkey.ppk yourfilename ubuntu@public_DNS:/home/ubuntu/
+```
+#### Ejemplo: 
+
+Mover el archivo *hansen.zip*, que está almacenado en la carpeta *"Descargas"*, al directorio */home/ubuntu/others* de la Instance.
+1. Mover el archivo *key_biotablero_prod.ppk* a la misma carpeta *Descargas* o especificar la ruta completa al mismo.
+2. En CMD navegar a la carpeta *Descaragas*: 
+```{bash, eval=FALSE}
+C:\Users\current_user>cd Downloads
+```
+Escribir el comando PSCP. Incluye la clave .ppk (con ruta si es necesario), el nombre del archivo que se va transferir, la dfirección IPv4 de la instancia y la ruta al directorio donde se va a almacenar el archivo:
+```{bash, eval=FALSE}
+C:\> pscp -i key_biotablero_prod.ppk hansen.zip ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com:/home/ubuntu/others
+```
+Para transferir datos entre la instancia y la máquina local, el procedimiento es el mismo, invirtiendo las rutas:
+```{bash, eval=FALSE}
+C:\> pscp -i C:\[path]\key_biotablero_prod.ppk ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com:/home/ubuntu/others/hansen.zip
+```
+Referencia: [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.edu/how-to/data-recipes/moving-files-into-and-out-of-an-aws-ec2-instance-windows/)
+
+## MacOS/Linux
+El procedimiento es similar al de PSCP en Windows;  mediante SCP (*secure copy protocol*) y utlizando la clave .pem en lugar de .ppk.
+
+
+```{bash, eval=FALSE}
+scp -i key_biotablero_prod.pem hansen.zip ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com:/home/ubuntu/others
+```
+
+Referencia: [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.edu/how-to/data-recipes/connect-to-ec2-with-ssh-mac-os-x/)
+
+Manipulación del Back End:
+
+
+En el directorio  ubuntu/home/plumber están almacenados los scripts y funciones necesarios para los procesos en el backend, así como los componentes para configurar y ejecutar Docker 
+
+1. biotablero_bash.sh: Archivo Bash de configuración incial de la instancia.
+2. main.R: R script de inicio de  BioTablero API
+3. biotablero_api.R: API y funciones indicadoras.
+4. start_mongo_speciesrecords.R: R script para poblar la base de datos de Mongo database
+5. dockerfile: Archivo con instrucciones para compìlar la imagen de BioTablero en el Docker 
+6. docker-compose.yml: configuración de los componentes (BioTablero API, MongoDB, Nginx).
+7. init-mongo.js: crea al usuariuo de la base de datos Mongo.
+8. nginx.conf: archivo de configuración del load balancer.
+9. s3.env: Variables del ambiente para usar el servicio Amazon S3.
+10. forestChange_1.0.tar.gz: Package used in the biotablero_api.R script (*not necessary anymore, update to ecochange*)
+
+[**\textcolor{red}{todavía corre con  Ecochange 1.0N}**]
+
+Para compilar(build) el Docker, correr esta línea :
+```{bash, eval=FALSE}
+ubuntu@ip-172-31-7-208:~/plumber$ docker-compose build
+```
+
+
+### Instalar programas y configuar el sistema
+
+Montar unidad de almacenamiento externo de 30GB. Esta nueva caropeta esta en The folder will be ´/data´
+
+```{bash, eval=FALSE}
+lsblk
+sudo mkdir /data
+sudo file -s /dev/xvdb
+sudo mkfs -t xfs /dev/xvdb
+sudo mount /dev/xvdb /data
+```
+
+Instalar docker, docker-compose, 7zip y tree.
+
+```{bash, eval=FALSE}
+sudo apt-get update -y
+sudo apt install tree -y
+sudo apt-get install p7zip-full -y
+sudo apt install docker.io -y
+```
+
+Ejecutar los comandos de Docker sin **sudo**. Es posible que sea necesario reiniciar la conexión con el hos . That's why some docker commands bellow will use ´sudo´ **Esto no lo entiendo**
+
+```{bash, eval=FALSE}
+sudo usermod -aG docker ubuntu
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+Download docker-compose (ver si hay versión nueva)
+```{bash, eval=FALSE}
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+### Descargar los datasets comprimidos
+
+Los datasets se almacenan en la carpeta ´/data´.
+
+#### Especies data sets
+
+Biomodelos (Biomod.7z). 6113 species datasets from 1340097 locations (.RData files). **Como actualizamos esto?** 
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Qu5H8Z5c91KVjVs_HT_0Qc4ypjwlojLj' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1Qu5H8Z5c91KVjVs_HT_0Qc4ypjwlojLj" -O /data/Biomod.7z && rm -rf /tmp/cookies.txt
+```
+
+UICN shapefiles from 3082 species (uicn.7z)
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1zLzh3TAp0Tz9NdI5JDu4uTSyQt13tRBz' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1zLzh3TAp0Tz9NdI5JDu4uTSyQt13tRBz" -O /data/uicn.7z && rm -rf /tmp/cookies.txt
+```
+
+GBIF records (recs.7z). RData file to be uploaded into Mongo data base
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Cv5k7YIzgYbR2Uv5DZca_-kY_6IWLfYB' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1Cv5k7YIzgYbR2Uv5DZca_-kY_6IWLfYB" -O /data/recs.7z && rm -rf /tmp/cookies.txt
+```
+
+
+#### Ecosystems
+
+This needs to be updated in the cloud server, so everything gets installed and loaded at once!!
+Hansen and IDEAM forest layers (forest.7z). Two .tif layers for forest cover and other two for forest loss year.
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1fK4QnUZi9uluu0vtUZlNlRVYDJFfu_Xc' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1fK4QnUZi9uluu0vtUZlNlRVYDJFfu_Xc" -O /data/forest.7z && rm -rf /tmp/cookies.txt
+```
+
+Biomes (biome), Biotic regions (bioticreg) and colective areas (colectareas) shapefiles (SingleLayers1.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1mFQLlTjYQRytldLNWNzEflNMW0smNBFp' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1mFQLlTjYQRytldLNWNzEflNMW0smNBFp" -O /data/singleLayers1.7z && rm -rf /tmp/cookies.txt
+```
+
+**También ver si esto se puede / hay con que actualizarlo**
+Contain Tropical dry forest (tropdryforest), Special managment areas (sma), protected areas (protectareas), paramos (params), and wetlands (hum) shapefiles (SingleLayers2.7z).
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1zWa27R5ob5rCvHmCpOKo8dnBVD3oyOS7' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1zWa27R5ob5rCvHmCpOKo8dnBVD3oyOS7" -O /data/singleLayers2.7z && rm -rf /tmp/cookies.txt
+```
+
+
+Ecosystem red list criteria (ecouicn) shapefile (SingleLayers3.7z).
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=16uCVl_2GvDgBj_UEnDh5IcfqUMlfFUmq' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=16uCVl_2GvDgBj_UEnDh5IcfqUMlfFUmq" -O /data/singleLayers3.7z && rm -rf /tmp/cookies.txt
+```
+
+
+Compensation factor (faccomp) shapefile (SingleLayers4.7z)
+
+```{bash, eval=FALSE}
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1TmWXAEK6NOzEXxeok8BZ7-xJTing_-Or' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1TmWXAEK6NOzEXxeok8BZ7-xJTing_-Or" -O /data/singleLayers4.7z && rm -rf /tmp/cookies.txt
+```
+
+
+#### Corine Land cover
+
+
+2000-2002 Corine land cover, level 1 shapefile (N1_2000_2002.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1H9ZoebF7f4l6T1aUlyB8xFdWWh1tZzqg' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1H9ZoebF7f4l6T1aUlyB8xFdWWh1tZzqg" -O /data/N1_2000_2002.7z && rm -rf /tmp/cookies.txt
+```
+
+
+2005-2009 Corine land cover, level 1 shapefile (N1_2005_2009.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Q2RA5ZMAmthtVy9Ha837dBkRkUUi-hIR' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1Q2RA5ZMAmthtVy9Ha837dBkRkUUi-hIR" -O /data/N1_2005_2009.7z && rm -rf /tmp/cookies.txt
+```
+
+
+2010-2012 Corine land cover, level 1 shapefile (N1_2010_2012.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1W7CPQxc2jjbAoNCqx4G7RWrKbTFiTDLi' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1W7CPQxc2jjbAoNCqx4G7RWrKbTFiTDLi" -O /data/N1_2010_2012.7z && rm -rf /tmp/cookies.txt
+```
+
+2000-2002 Corine land cover, level 2 shapefile (N2_2000_2002.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1otea_0veqAsXVFPFAQJR2VVhyItWpKEy' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1otea_0veqAsXVFPFAQJR2VVhyItWpKEy" -O /data/N2_2000_2002.7z && rm -rf /tmp/cookies.txt
+```
+
+
+2005-2009 Corine land cover, level 2 shapefile (N2_2005_2009.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1irMemuqGv6uigmRf31BMXKG3O-tfn76u' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1irMemuqGv6uigmRf31BMXKG3O-tfn76u" -O /data/N2_2005_2009.7z && rm -rf /tmp/cookies.txt
+```
+
+
+2010-2012 Corine land cover, level 2 shapefile (N2_2010_2012.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=14iojjoWEk2jztE8WvAeLqPQCTNXNGYBv' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=14iojjoWEk2jztE8WvAeLqPQCTNXNGYBv" -O /data/N2_2010_2012.7z && rm -rf /tmp/cookies.txt
+```
+
+
+2000-2002 Corine land cover, level 3 shapefile (N3_2000_2002.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1b2AfYhRpecBNGj0eUujal3iMFoUNPNkp' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1b2AfYhRpecBNGj0eUujal3iMFoUNPNkp" -O /data/N3_2000_2002.7z && rm -rf /tmp/cookies.txt
+```
+
+
+2005-2009 Corine land cover, level 3 shapefile (N3_2005_2009.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Cpue_Sk5nJJFHYzMNnaLvp6Zm8niccGP' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1Cpue_Sk5nJJFHYzMNnaLvp6Zm8niccGP" -O /data/N3_2005_2009.7z && rm -rf /tmp/cookies.txt
+```
+
+
+2010-2012 Corine land cover, level 3 shapefile (N3_2010_2012.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1lYYowTIwYSEyquJY-dCodbCcRI6iTNKD' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1lYYowTIwYSEyquJY-dCodbCcRI6iTNKD" -O /data/N3_2010_2012.7z && rm -rf /tmp/cookies.txt
+```
+
+#### Other data
+
+Species red list index tables, and bilogical records density raster (rli_surface.tar)
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1s6VDlh5IU_rZBBxYxbXGjjlXWAgVYz5d' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1s6VDlh5IU_rZBBxYxbXGjjlXWAgVYz5d" -O /data/rli_surface.tar && rm -rf /tmp/cookies.txt
+
+```
+
+
+Spatial templates shapefiles (templates.7z)
+
+```{bash, eval=FALSE}
+sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1amBqHS3ymXHSfG2lA_1K7BiN-ozeaIjb' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1amBqHS3ymXHSfG2lA_1K7BiN-ozeaIjb" -O /data/templates.7z && rm -rf /tmp/cookies.txt
+```
+
+
+### Crear directorios y  descomprimir los datos.
+
+Create directories according to API structure
+
+```{bash, eval=FALSE}
+sudo mkdir /data/clc
+sudo mkdir /data/forest
+sudo mkdir /data/rli
+sudo mkdir /data/output
+sudo mkdir /data/singleLayers
+sudo mkdir /data/species
+sudo mkdir /data/species/uicn
+sudo mkdir /data/species/biomod
+sudo mkdir /data/species/records
+sudo mkdir /data/surface
+sudo mkdir /data/templates
+sudo mkdir /data/tempR
+```
+
+
+Extract compressed data into created folders
+
+```{bash, eval=FALSE}
+sudo 7za x -o/data/clc /data/N1_2000_2002.7z
+sudo 7za x -o/data/clc /data/N1_2005_2009.7z
+sudo 7za x -o/data/clc /data/N1_2010_2012.7z
+
+sudo 7za x -o/data/clc /data/N2_2000_2002.7z
+sudo 7za x -o/data/clc /data/N2_2005_2009.7z
+sudo 7za x -o/data/clc /data/N2_2010_2012.7z
+
+sudo 7za x -o/data/clc /data/N3_2000_2002.7z -aos
+sudo 7za x -o/data/clc /data/N3_2005_2009.7z -aos
+sudo 7za x -o/data/clc /data/N3_2010_2012.7z -aos
+
+sudo 7za x -o/data/singleLayers /data/singleLayers1.7z
+sudo 7za x -o/data/singleLayers /data/singleLayers2.7z
+sudo 7za x -o/data/singleLayers /data/singleLayers3.7z
+sudo 7za x -o/data/singleLayers /data/singleLayers4.7z
+
+sudo 7za x -o/data/species /data/Biomod.7z -y
+sudo 7za x -o/data/species/uicn /data/uicn.7z
+sudo 7za x -o/data/species/records /data/recs.7z
+
+sudo 7za x -o/data/forest /data/forest.7z
+
+sudo 7za x -o/data /data/rli_surface.tar
+sudo 7za x -o/data /data/templates.7z
+```
+
+
+### Launch docker
+
+Execute docker-compose command to build ´biotablero´ and ´mongo´ docker images and containers
+
+```{bash, eval=FALSE}
+sudo docker-compose up -d
+```
+
+
+### Populate MongoDB data base
+
+Launch ´start_mongo_speciesrecords.R´ and upload biological records into mongo database
+
+```{bash, eval=FALSE}
+sudo docker exec -it biotablero Rscript start_mongo_speciesrecords.R
+```
+
+
+### Confirm '/data' folder structure
+
+Check the
+```{bash, eval=FALSE}
+tree -d /data # -d : List directories only
+```
+
+
+<!-- ```{bash, eval=FALSE} -->
+<!-- # /data -->
+<!-- # ├── clc -->
+<!-- # ├── forest -->
+<!-- # ├── output -->
+<!-- # ├── rli -->
+<!-- # ├── singleLayers -->
+<!-- # ├── species -->
+<!-- # │   ├── biomod -->
+<!-- # │   │   └── spByCell -->
+<!-- # │   ├── records -->
+<!-- # │   └── uicn -->
+<!-- # ├── surface -->
+<!-- # ├── tempR -->
+<!-- # └── templates -->
+<!-- ``` -->
+
+
+<!-- <!-- #### Folder size --> -->
+
+<!-- <!-- Check folder size.  --> -->
+
+<!-- <!-- ```{bash, eval=FALSE} --> -->
+<!-- <!-- sudo du /data --> -->
+<!-- <!-- ``` --> -->
+
+

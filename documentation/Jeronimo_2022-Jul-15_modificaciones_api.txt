@@ -1,0 +1,26 @@
+biotablero_api.R || add new source
+lINE: 720
+
+    if (! sour %in% c('hansen', 'ideam', 'HARMONZ')){
+        return(paste0('ERROR: Source "', sour, '" not "ideam", "hansen" or "HARMONZ" for forest source'))
+        stop()
+      }
+
+lINE: 737
+    if (sour == 'hansen'){
+        if( ! all(ebvyearnum %in% 2000:2018)){
+          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2018 for "hansen" source'))
+          stop()
+        }
+      } else if (sour == 'ideam'){
+        if(! all(ebvyearnum %in% 1990:2016)){
+          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 1990:2016 for "ideam" source'))
+          stop()
+        }
+      }
+
+
+
+
+dockerfile || line 28: ingresar ecochange
+RUN R -e "install.packages('forestChange')"

@@ -3,7 +3,7 @@ library(rgdal)
 library(rgeos)
 library(forestChange)
 
-source('C:/Plumber/biotablero_fun.R') # >>>>>>>> Cambiar ruta
+source('/Users/sputnik/Documents/biotablero_api/biotablero_fun.R') # >>>>>>>> Cambiar ruta
 
 ## 1. Cargar un polígono
 # pol <- writeWKT(dep[grep('AMAZONAS', dep$NOM_DPTO), ])
@@ -17,20 +17,19 @@ polyg <- rgeos::readWKT( gsub('%20', ' ', simplePol))
 
 plot(dep, axes = TRUE, xlim = c(-75, -70), ylim = c(-4, 12))
 plot(polyg, add = TRUE, border = 1, col = 2)
-writeOGR(SpatialPolygonsDataFrame(polyg, data.frame(id = 1)), 'E:/iavh_biotablero', 'Mariquita', driver = 'ESRI Shapefile')
+writeOGR(SpatialPolygonsDataFrame(polyg, data.frame(id = 1)), '/Users/sputnik/Documents/Biotablero', 'Macuira', driver = 'ESRI Shapefile')
 
-aws <- 'ec2-34-201-153-29.compute-1.amazonaws.com'
-aws <- 'ec2-3-84-170-26.compute-1.amazonaws.com'
-localDataPath <- 'E:/iavh_biotablero/data'
-
+aws <- 'ec2-3-137-83-192.us-east-2.compute.amazonaws.com'
+#aws <- 'ec2-3-84-170-26.compute-1.amazonaws.com'
+localDataPath <- '/Users/sputnik/Documents/Biotablero/data'
 
 ## Understanding the API
 
 ###################################################################
 ##  > Test function. Get a simple message 
 
-test_local <- biotablero(server = 'local', port = ':8000', endpoint = 'biotablero', printURL = TRUE,
-                         dataPath = localDataPath, metric = 'test')
+test_local <- biotablero(server = 'local', port = ':8000', endpoint = 'biotablero', printURL = TRUE, dataPath = localDataPath, metric = 'test')
+
 (test_aws <- biotablero(server = 'web', webURL = aws, port = ':8000', endpoint = 'biotablero',
                        printURL = TRUE, metric = 'test'))
 
@@ -69,7 +68,7 @@ system.time(ForChange_aws <- biotablero(server = 'web', webURL = aws, port = ':8
                                         endpoint = 'biotablero', metric = 'forest', 
                                         sour = 'hansen', ebvstat = 'forest.ext',
                                         pol = simplePol))
-#http://ec2-3-92-160-103.compute-1.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
+#http://ec2-3-137-83-192.us-east-2.compute.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
 #user  system elapsed 
 #0.05    0.00  191.84 
 
