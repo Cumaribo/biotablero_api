@@ -151,8 +151,8 @@ function(pol = NA){
 }
 
 
-#* List the available spatial templates
-#* @param templatesPath The path containing the available layers
+#* List the available stpatial templates
+#* @param templatesPath The path containign the available layers
 #* @get /listTemplates
 function(templatesPath = '/data/templates'){
   gsub('.dbf', '', list.files(path = templatesPath, pattern = '.dbf'))
@@ -160,8 +160,8 @@ function(templatesPath = '/data/templates'){
 
 
 #* Get the template table & IDs
-#* @param template The table required
-#* @param dataTemplates The path containing the available layers
+#* @param template The table requiered
+#* @param dataTemplates The path containign the available layers
 #* @get /getTemplate
 function(template = NA, templatesPath = '/data/templates'){
   templateTable <- tryCatch(foreign::read.dbf(paste0(templatesPath, '/', template, '.dbf')),
@@ -527,10 +527,10 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
       }
     }
-
     
     
-## Get into the crop-like functions for temporal layers: CLC ---------
+    
+    ## Get into the crop-like functions for temporal layers: CLC ---------
     if (metric %in% c('clc')){
       if (is.null(clclevel) | is.na(clclevel)){
         return(paste0('ERROR: clclevel required (1, 2 or 3)'))
@@ -703,7 +703,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
     
     
     ## Get into the forest metrics ------
-    if (metric %in% 'forest'){ 
+    if (metric %in% 'forest') { 
       
       if (is.null(ebvstat) | is.null(sour)){
         return(paste0("ERROR: forest metric requiere 'ebvstat' and 'sour' arguments"))
@@ -716,8 +716,8 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         stop()
       }
       
-      if (! sour %in% c('hansen', 'ideam', 'hansen_armonized')){
-        return(paste0('ERROR: Source "', sour, '" not "ideam", "hansen" or "hansen_armonized" for forest source'))
+      if (! sour %in% c('hansen', 'ideam')){
+        return(paste0('ERROR: Source "', sour, '" not "ideam" or "hansen" for forest source'))
         stop()
       }
       
@@ -734,21 +734,16 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       ebvyearnum <- as.numeric(strsplit(ebvyear, ':')[[1]])
       
       if (sour == 'hansen'){
-        if( ! all(ebvyearnum %in% 2000:2021)){
-          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen" source'))
+        if( ! all(ebvyearnum %in% 2000:2018)){
+          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2018 for "hansen" source'))
           stop()
         }
-      } if (sour == 'ideam'){
       } else if (sour == 'ideam'){
-        if(! all(ebvyearnum %in% 1990:2018)){
-          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 1990:2018 for "ideam" source'))
+        if(! all(ebvyearnum %in% 1990:2016)){
+          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 1990:2016 for "ideam" source'))
           stop()
         }
-      } else if (sour == 'hansen_armonized'){
-        if(! all(ebvyearnum %in% 2000:2021)){
-          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hanse_armonized" source'))
-          stop()
-        }
+      }
       
       ebvporcrangenum <- as.numeric(strsplit(ebvporcrange, ':')[[1]])
       
@@ -830,12 +825,10 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
       } else {
         
-        ## Use ForestChange package ## update to ecochange 
+        ## Use ForestChange package
         stk <- stack(treeTemp, maskTemp) 
         names(stk) <- c("treecover2000", "lossyear")
         
-
-        ###### Here, subsitute FCMask with ecochange::echanges !!!!
         fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
                                        perc = eval(parse(text = ebvporcrange)), pr.utm = FALSE)
         fcmetric <- forestChange::EBVmetric(fcmask, what = ebvstat)
@@ -1074,5 +1067,3 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
                                         ebvporc = ebvporcrange, dots,
                                         time = paste(timeElapsed, attr(timeElapsed, 'units')) ) ) ))
 }
-  }
-  
