@@ -36,9 +36,9 @@ ls --sort=size -l ## sort by size
 lsblk # check units
 lsblk -f # check units full
 sudo mkdir /data
-sudo file -s /dev/xvdb # prepare mount
-sudo mkfs -t xfs /dev/xvdb # initialize // work good if unit is empty
-sudo mount /dev/xvdb /data # Mount data
+sudo file -s /dev/nvme1n1 # prepare mount
+sudo mkfs -t xfs /dev/nvme1n1 # initialize // work good if unit is empty
+sudo mount /dev/nvme1n1 /data # Mount data
 
 
 ## After reboot -- mount external data
