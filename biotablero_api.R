@@ -1,7 +1,4 @@
 ### Load required libraries
-
-# Update here, make it as a single line with all the libraries. Include supresswarnings
-
 suppressWarnings(suppressPackageStartupMessages(library(forestChange)))
 suppressWarnings(suppressPackageStartupMessages(library(gdalUtils)))
 suppressWarnings(suppressPackageStartupMessages(library(rgeos)))
@@ -14,11 +11,6 @@ suppressWarnings(suppressPackageStartupMessages(library(gdalUtilities)))
 suppressWarnings(suppressPackageStartupMessages(library(rasterDT)))
 # suppressWarnings()
 
-#This first thing can be implemented better using landscape metrics. We can get areas in ha 
-# And run easier, more interesting analysis that the ones made here. In fact, it might 
-# be possible to visualize something, using some functions on landscapemetrics.
-
-# Why this 256 conditions?
 raster_count <- structure(function # Count the pixels in a given raster
                           ### This function generate a frequency table for a given raster dataset
                           (
@@ -210,7 +202,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
          ebvstat = NA, sour = NA, ebvyear = NA, ebvporcrange = NA,
          spFormat = 'list', spRecordsFields = NA, spRecordsTabulate = NA, 
          clclevel = NA, cellSize = NA, rasterLayer = FALSE, dataPath = '/data') {
-         clclevel = NA, cellSize = NA, rasterLayer = FALSE, dataPath = '/data'){
   
   # metric = NULL; lay = NULL; polID = NULL; pol = NULL;
   # ebvstat = NULL; sour = NULL; ebvyear = NULL; ebvporcrange = NULL;
@@ -537,6 +528,8 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       }
     }
 
+    
+    
 ## Get into the crop-like functions for temporal layers: CLC ---------
     if (metric %in% c('clc')){
       if (is.null(clclevel) | is.na(clclevel)){
@@ -708,8 +701,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
     }
     
-    ## Get into the forest metrics ------
-    if (metric %in% 'forest') { 
+    
     ## Get into the forest metrics ------
     if (metric %in% 'forest'){ 
       
@@ -726,8 +718,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
       if (! sour %in% c('hansen', 'ideam', 'hansen_armonized')){
         return(paste0('ERROR: Source "', sour, '" not "ideam", "hansen" or "hansen_armonized" for forest source'))
-      if (! sour %in% c('hansen', 'ideam', 'hansen_armonized')){
-        return(paste0('ERROR: Source "', sour, '"not "ideam", "hansen" or "hansen_armonized" for "forest source"'))
         stop()
       }
       
@@ -749,7 +739,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
           stop()
         }
       } if (sour == 'ideam'){
-=======
       } else if (sour == 'ideam'){
         if(! all(ebvyearnum %in% 1990:2018)){
           return(paste0('ERROR: ebvyear "', ebvyear, '" not in 1990:2018 for "ideam" source'))
@@ -758,7 +747,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       } else if (sour == 'hansen_armonized'){
         if(! all(ebvyearnum %in% 2000:2021)){
           return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hanse_armonized" source'))
-          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen_armonized" source'))
           stop()
         }
       
@@ -845,11 +833,9 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         ## Use ForestChange package ## update to ecochange 
         stk <- stack(treeTemp, maskTemp) 
         names(stk) <- c("treecover2000", "lossyear")
-<<<<<<< HEAD
         
-=======
+
         ###### Here, subsitute FCMask with ecochange::echanges !!!!
->>>>>>> f17f70848c5636c2d9e91991cb42e9feba0e0041
         fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
                                        perc = eval(parse(text = ebvporcrange)), pr.utm = FALSE)
         fcmetric <- forestChange::EBVmetric(fcmask, what = ebvstat)
