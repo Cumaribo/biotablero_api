@@ -1,0 +1,81 @@
+---
+title: "Biotablero-Backend Parallel Assessment"
+output: html_notebook
+---
+Analizar cuales de las salidas gráficas-tabulares que produce backend son  compatibles con las de Biotablero sin necesidad de necesidad de agregar datos nuevos.  
+Evaluación de las salidas de Biotablero y el Backend:
+
+1. Envíar pérdida de Bosque. Done. Reproyectado y alineado con el crs estándar
+prj <- "+proj=tmerc +lat_0=4.596200417 +lon_0=-74.07750791700001 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +units=m +no_defs"
+
+2. Nuevas salidas de datos que puedan representarse más fácil en Biotablero
+
+3. Consultas personalizadas.Que tipo de consultas se pueden hacer?
+
+4. Biotablero tiene áreas predefinidas, backend acepta áreas definidas por el usuario (limitante: superficie máxima 5.000 kmˆ2) 
+
+5. Que indicadores se pueden usar para analizar esta información?
+
+
+## Salidas de datos.
+
+
+### Ecosistemas
+
+Hice pruebas con diferentes zonas de estudio, y el funcionamiento es correcto. Utilicé el polígono de Bogota (todo el distrito, incluyendo la localidad de Sumapaz para ello). 
+Biotablero presenta la información en Ha, Backend en kmˆ2. Creo que sería mejor utilizar las mismas unidades en ambos casos; ha, sobretodo porque landscapemetrics por defecto retonra los resultados en ha. Esto es así porque para backend, se utilizó un sistema propio para calcular áreas. Yo creo que es mejor utiizar landscapemetrics para eso ( y mejorar las salidas, dando información más interesante, por ejemplo pérdidas de conectividad o procesos de fragmentación de los ecosistemas)  
+
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <-"
+| Elemento      |     Backend  | Biotablero  |Obs |
+|---------------|-------------|----------------|------------------:|
+| Bosques| IDEAM (1990-2016)  Hansen (2000-2018) (anual/% cobertura)| Hansen Armonizado periodos 5 años | Actualizar script y 2018-2021 
+| Integridad bosques | NA | Combinación ICE (Hansen et al 2019) y HH-Biotablero | Agregar a Backend |
+| Coberturas |CLC no funciona  | CLC 2018 Natural/Secundaria/Transformada|  |
+| Areas Protegidas| AP not running| AP |  |
+| Páramos |Páramos 913.948kmˆ2 56.2 % |Páramos 89240 ha 56.24% | Ajustar Areas/poligonos. Funciona bien |
+| Bosque Seco Tropical | 0 | 0 | Probar en algun lado con BST |
+| Humedales| Probar | 75,738 ha 20.02% en PA| Ver por que no funciona |
+| Lista Roja Ecos | Error | NA | ver por que no funciona. Agregar a BT |
+| Especies | Biomodelos 2.257 Especies Incluye lista detallada, no gráficos |  Biomodelos 2226 Especies. Clasificación  endémicas/ invasoras/amenzadas, vacíos y  registros observados (ID2) | Combinar  y validar datasets|
+| Huella Humana | NA | Índice Huella Humana Correa-Ayram et al 2020 Actual/persistencia/Histórico| Agregar Backend |
+| Integridad | NA | Combinación ICE (Hansen et al 2019) y HH-Biotablero | Agregar Backend | 
+| Conectividad Áreas protegidas | NA | Calculada del RUNAP | Agregar Backend |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
+
+Hansen 2000-2018 (actualizar a  2021) por que  termina en 2012 la gráfica en algunos casos? This is still pending. 
+
+
+System Files:
+
+ubuntu@ip-172-31-7-208:~$ 
+
+1. dbds: Databases: N1_2000_2002.tif.vat.dbf. don't know what it stands for. now i know, for uicn datan
+  biome.tif.vat.dbf 
+  bioticreg.tif.vat.dbf
+  colectrareas.tif.vat.dbf
+  ecouicn.tif.vat.dbf
+  faccomp.tif.vat.dbf. Don't know what it is
+  hum.tif.vat.dbf
+  param.tif.vat.dbf
+  protectareas.tif.vat.dbf
+  sma.tif.vat.dbf
+  tropdryforest.tif.vat.dbf
+
+3. others: ecochange, test polygons
+4. Plumber. The important setup and processing scripts and routines are here. The backend "lives here".
+  a. biotablero_api.R this runs the fucntions
+  b. main. Set the path
+  c. app.r shiny app
+6. snap: Emacs. I think i added this. 
+7. ssd. It is indeed important. Here is where the interaction with the user of the app takes place. The "site" is here.  
+8. Shiny server deb. Don't know yet how it works. But, important was to edit the app.R file.
+
+
+Root directory: ubuntu@ip-172-31-7-208:/data$: downloaded data fron Ivan's cloud storage. Have not been able to know how to put data there/or if i need to change the source.
+Update june 26 2022. It can be moved using **sudo**. However, it would be better to put everything in the cloud storage and update from by running biotablero.sh.
+
+
+

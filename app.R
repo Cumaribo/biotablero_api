@@ -347,7 +347,11 @@ ui <- dashboardPage(skin = 'green',
                                 fluidRow(
                                   # Box text
                                   fluidRow(column(width = 12, box(width = 12, id = "box_wet", collapsible = TRUE, title = 'Detalles',
+<<<<<<< HEAD
                                                                   p(paste("Este indicador mide la superficie de páramos", 
+=======
+                                                                  p(paste("Este indicador mide la superficie de Humedales", 
+>>>>>>> f17f70848c5636c2d9e91991cb42e9feba0e0041
                                                                           "en un área particular")
                                                                   ), 
                                                                   HTML(paste("<p>Acceda a los datos originales <a href='http://geonetwork.humboldt.org.co/geonetwork/srv/api/records/c9a5d546-33b5-41d6-a60e-57cfae1cff82/attachments/Complejos_Paramos_100K.7z'>acá</a>", 

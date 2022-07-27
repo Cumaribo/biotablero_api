@@ -1,0 +1,143 @@
+curl "http://localhost:8000/test" ### Chek if is alive
+
+sudo usermod -aG sudo root
+
+## Get into each docker container for debug ---
+sudo docker build -t image_biotablero plumber/ # Create an image from our container
+sudo docker run -d -p 8000:8000 --name biotablero -v /data:/data image_biotablero
+docker logs biotablero  # Get the container logs
+docker ps --all  # Get the running containers
+sudo docker exec -it biotablero /bin/bash # Get into the container
+sudo docker exec -it biotablero_biotablero-api.1.n2rtlbos6mqajn82y49kq76n2 /bin/bash
+sudo docker stop biotablero # Stop container
+sudo docker restart biotablero # restart container
+sudo docker image ls # List available images
+sudo docker rm bisotablero # Remove container
+sudo docker rmi image_biotablero # Remove image
+docker service rm $(docker service ls -q) # remove al services
+
+
+# Tree -- list files and folders
+tree -d /data # d only dirs
+du ch  *  ## Folder size
+du -sh * | sort -h
+df -aTh  # check mounted data
+df -h . # all disk available/used
+lsblk -f # check size in mounted units
+
+## Mounting external drive # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-detaching-volume.html
+sudo mkfs -t xfs -f /dev/xvdg
+sudo umount -d -l /dev/xvdb
+
+## Unmounting external drive
+umount -d /dev/sdh
+ls --sort=size -l ## sort by size
+
+lsblk # check units
+lsblk -f # check units full
+sudo mkdir /data
+sudo file -s /dev/nvme1n1 # prepare mount
+sudo mkfs -t xfs /dev/nvme1n1 # initialize // work good if unit is empty
+sudo mount /dev/nvme1n1 /data # Mount data
+
+
+## After reboot -- mount external data
+sudo mount /dev/xvdg /data
+sudo mount /dev/nvme1n1 /data
+
+## Check logs of dockers
+docker service logs biotablero_biotablero-api
+
+##
+## Launch swarm -- usefull for after reboot --------------
+##
+cd ~/plumber/  # go to file location
+docker service rm $(docker service ls -q) # stop services
+docker service rm $(docker service ls -q) 
+time docker-compose build # Requires a new biotablero_api.R
+sudo docker swarm init # Create services
+sudo docker stack deploy -c docker-compose.yml biotablero # Init services. take some secods
+sleep 30 # Sleep some time before start
+curl "http://localhost:8080/test"
+curl "http://localhost:8080/polsizekm2?pol=POLYGON((-74.133545%204.144818,-73.817139%203.741479,-74.572998%203.390597,-74.133545%204.144818))"
+curl "ec2-3-137-83-192.us-east-2.compute.amazonaws.com:8080/polsizekm2?pol=POLYGON((-74.133545%204.144818,-73.817139%203.741479,-74.572998%203.390597,-74.133545%204.144818))" 
+# 2554.399
+
+
+## Quick stop and restart
+cd ~/plumber/  # go to file location
+docker service rm $(docker service ls -q) # stop services
+sudo docker stack deploy -c docker-compose.yml api # init services
+
+
+## Stop all docker services
+docker service rm $(docker service ls -q)
+docker service rm $(docker service ls -q)
+sudo docker image ls | grep -v rocker | grep -v REPOSITORY | awk '{print $3}' | xargs sudo docker rmi
+sudo docker image ls | grep -v rocker | grep -v REPOSITORY | awk '{print $3}' | xargs sudo docker rmi
+sudo docker rmi $(sudo docker images -f "dangling=true" -q) # dangling images
+# sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker stop
+# sudo docker ps -a | cut -d ' ' -f 1 | xargs sudo docker stop
+# sudo docker ps -a | cut -d ' ' -f 1 | xargs sudo docker rm
+#docker rm $(docker ps -aq)
+docker rmi biotablero:latest
+#docker rmi $(docker images -q) # delete all images
+#docker rmi $(docker images -q) # delete all images
+docker image ls
+
+
+# Update Shiny
+sudo rm /srv/shiny-server/ssd/*
+sudo su - -c "R -e \"shinyParallel::installShinyParallel('/home/ubuntu/ssd/', max.sessions = 25)\"" # home/shinyusername/
+sudo rm /srv/shiny-server/ssd2 -R
+sudo cp /home/ubuntu/ssd /srv/shiny-server/ssd2 -R
+
+
+# Update Shiny
+sudo rm /srv/shiny-server/gedivis/*
+sudo su - -c "R -e \"shinyParallel::installShinyParallel('/home/vmuser/gedivis/', max.sessions = 25)\"" # home/shinyusername/
+sudo rm /srv/shiny-server/gedivis2 -R
+sudo cp /home/vmuser/gedivis /srv/shiny-server/gedivis2 -R
+
+## Run container
+docker exec -it biotablero_biotablero-api. /bin/bash  
+# hit tab after the period (.) to get a particular docker name, since has a hash tag 
+
+## Check logs
+docker service logs biotablero_biotablero-api
+
+
+
+#### File sizes
+ubuntu@ip-172-31-9-164:/$ sudo du -h --max-depth=1 | sort -hr
+40G     .
+22G     ./data
+15G     ./var
+2.0G    ./usr
+1.7G    ./snap
+48M     ./boot
+24M     ./home
+5.7M    ./etc
+1.4M    ./run
+60K     ./root
+56K     ./tmp
+16K     ./opt
+16K     ./lost+found
+4.0K    ./srv
+4.0K    ./mnt
+4.0K    ./media
+4.0K    ./data2
+0       ./sys
+0       ./proc
+0       ./dev
+
+# df ## check size
+ilesystem      Size  Used Avail Use% Mounted on
+/dev/root        30G   30G     0 100% /
+
+#https://linuxize.com/post/how-to-check-disk-space-in-linux-using-the-df-command/
+df /
+df -h
+df -t
+df -t ext4
+df -x tmpfs
