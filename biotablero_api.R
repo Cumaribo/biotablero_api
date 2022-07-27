@@ -2,7 +2,6 @@
 
 # Update here, make it as a single line with all the libraries. Include supresswarnings
 
->>>>>>> f17f70848c5636c2d9e91991cb42e9feba0e0041
 suppressWarnings(suppressPackageStartupMessages(library(forestChange)))
 suppressWarnings(suppressPackageStartupMessages(library(gdalUtils)))
 suppressWarnings(suppressPackageStartupMessages(library(rgeos)))
