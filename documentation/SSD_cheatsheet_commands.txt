@@ -1,8 +1,11 @@
-curl "http://localhost:8000/test" ### Chek if is alive
+Esta página contiene algunos comandos esenciales para desplegar, mantener, configurar de la consola de 
 
+curl "http://localhost:8000/test" ### Chek if is alive
+# waht is this for?
+#"give sudo granted"
 sudo usermod -aG sudo root
 
-## Get into each docker container for debug ---
+## Get into each docker container for debug --- Waht does this mean ? "Get into each container"?
 sudo docker build -t image_biotablero plumber/ # Create an image from our container
 sudo docker run -d -p 8000:8000 --name biotablero -v /data:/data image_biotablero
 docker logs biotablero  # Get the container logs
@@ -12,7 +15,7 @@ sudo docker exec -it biotablero_biotablero-api.1.n2rtlbos6mqajn82y49kq76n2 /bin/
 sudo docker stop biotablero # Stop container
 sudo docker restart biotablero # restart container
 sudo docker image ls # List available images
-sudo docker rm bisotablero # Remove container
+sudo docker rm biotablero # Remove container
 sudo docker rmi image_biotablero # Remove image
 docker service rm $(docker service ls -q) # remove al services
 
@@ -46,7 +49,6 @@ sudo mount /dev/xvdg /data
 sudo mount /dev/nvme1n1 /data
 
 ## Check logs of dockers
-docker service logs biotablero_biotablero-api
 
 ##
 ## Launch swarm -- usefull for after reboot --------------

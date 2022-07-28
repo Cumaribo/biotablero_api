@@ -2,13 +2,10 @@
 title: "Biotablero-Backend Parallel Assessment"
 output: html_notebook
 ---
-Analizar cuales de las salidas gráficas-tabulares que produce backend son  compatibles con las de Biotablero sin necesidad de necesidad de agregar datos nuevos.  
-Evaluación de las salidas de Biotablero y el Backend:
+Comparar  las salidas gráficas-tabulares que produce biotablero_api con las que están en Biotablero (IAVH)  sin necesidad de necesidad de agregar datos nuevos.  
 
-1. Envíar pérdida de Bosque. Done. Reproyectado y alineado con el crs estándar
-prj <- "+proj=tmerc +lat_0=4.596200417 +lon_0=-74.07750791700001 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +units=m +no_defs"
 
-2. Nuevas salidas de datos que puedan representarse más fácil en Biotablero
+1. Salidas de datos que puedan representarse más fácil en Biotablero
 
 3. Consultas personalizadas.Que tipo de consultas se pueden hacer?
 
@@ -23,7 +20,7 @@ prj <- "+proj=tmerc +lat_0=4.596200417 +lon_0=-74.07750791700001 +k=1 +x_0=10000
 ### Ecosistemas
 
 Hice pruebas con diferentes zonas de estudio, y el funcionamiento es correcto. Utilicé el polígono de Bogota (todo el distrito, incluyendo la localidad de Sumapaz para ello). 
-Biotablero presenta la información en Ha, Backend en kmˆ2. Creo que sería mejor utilizar las mismas unidades en ambos casos; ha, sobretodo porque landscapemetrics por defecto retonra los resultados en ha. Esto es así porque para backend, se utilizó un sistema propio para calcular áreas. Yo creo que es mejor utiizar landscapemetrics para eso ( y mejorar las salidas, dando información más interesante, por ejemplo pérdidas de conectividad o procesos de fragmentación de los ecosistemas)  
+Biotablero presenta la información en Ha, Backend en kmˆ2. Creo que sería mejor utilizar las mismas unidades en ambos casos; ha, sobretodo porque landscapemetrics por defecto retorna los resultados en ha. Para backend, se utilizó un sistema propio para calcular áreas. Yo creo que es mejor utilizar landscapemetrics para eso (y mejorar las salidas, dando información más interesante, por ejemplo incluyndo variables ecologicas como fragmentación,tamaño de los parches, y otras métricas relevantes.  
 
 ```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 tabl <-"
@@ -45,37 +42,6 @@ tabl <-"
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
 
-Hansen 2000-2018 (actualizar a  2021) por que  termina en 2012 la gráfica en algunos casos? This is still pending. 
-
-
-System Files:
-
-ubuntu@ip-172-31-7-208:~$ 
-
-1. dbds: Databases: N1_2000_2002.tif.vat.dbf. don't know what it stands for. now i know, for uicn datan
-  biome.tif.vat.dbf 
-  bioticreg.tif.vat.dbf
-  colectrareas.tif.vat.dbf
-  ecouicn.tif.vat.dbf
-  faccomp.tif.vat.dbf. Don't know what it is
-  hum.tif.vat.dbf
-  param.tif.vat.dbf
-  protectareas.tif.vat.dbf
-  sma.tif.vat.dbf
-  tropdryforest.tif.vat.dbf
-
-3. others: ecochange, test polygons
-4. Plumber. The important setup and processing scripts and routines are here. The backend "lives here".
-  a. biotablero_api.R this runs the fucntions
-  b. main. Set the path
-  c. app.r shiny app
-6. snap: Emacs. I think i added this. 
-7. ssd. It is indeed important. Here is where the interaction with the user of the app takes place. The "site" is here.  
-8. Shiny server deb. Don't know yet how it works. But, important was to edit the app.R file.
-
-
-Root directory: ubuntu@ip-172-31-7-208:/data$: downloaded data fron Ivan's cloud storage. Have not been able to know how to put data there/or if i need to change the source.
-Update june 26 2022. It can be moved using **sudo**. However, it would be better to put everything in the cloud storage and update from by running biotablero.sh.
 
 
 
