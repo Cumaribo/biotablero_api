@@ -42,6 +42,13 @@ tabl <-"
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
 
+I am always geting this error:
 
+ubuntu@ip-172-31-12-237:~$ sudo docker run -it biotablero /bin/bash
+Error in stopOnLine(lineNum, file[lineNum], e) : 
+  Error on line #1: '### Load required libraries' - Error in library(gdalUtils): there is no package called ‘gdalUtils’
+Calls: <Anonymous> ... tryCatchList -> tryCatchOne -> <Anonymous> -> stopOnLine
+Execution halted
+ For some reason gdalUtils is giving a lot of trouble!!!!!
 
 
