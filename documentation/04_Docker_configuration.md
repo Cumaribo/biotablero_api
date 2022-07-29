@@ -261,6 +261,7 @@ sudo 7za x -o/data /data/templates.7z
 Ejecutar el comando   docker-compose para montar (build) las imágenes de 'biotablero' y 'mongo'.
 
 ```bash
+cd plumber
 sudo docker-compose up -d
 ```
 
