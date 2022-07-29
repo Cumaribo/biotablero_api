@@ -827,14 +827,13 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         ## Use ForestChange package
         stk <- stack(treeTemp, maskTemp) 
-        names(stk) <- c("treecover2000", "lossyear")
-        
-        fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
-                                       perc = eval(parse(text = ebvporcrange)), pr.utm = FALSE)
-        fcmetric <- forestChange::EBVmetric(fcmask, what = ebvstat)
-        fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
-        result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
-        colnames(result)[2] <- ebvstat
+        # names(stk) <- c("treecover2000", "lossyear")
+        # fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
+        #                                perc = eval(parse(text = ebvporcrange)), pr.utm = FALSE)
+        # fcmetric <- forestChange::EBVmetric(fcmask, what = ebvstat)
+        # fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
+        # result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
+        # colnames(result)[2] <- ebvstat
         
         fcmask <- ecochange::echanges(pol = stk, 
                                       eco = c('treecover2000','lossyear'),
