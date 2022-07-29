@@ -1074,3 +1074,4 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
                                         ebvporc = ebvporcrange, dots,
                                         time = paste(timeElapsed, attr(timeElapsed, 'units')) ) ) ))
 }
+
