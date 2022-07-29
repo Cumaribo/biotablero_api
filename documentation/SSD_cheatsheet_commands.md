@@ -1,24 +1,9 @@
-Esta página contiene algunos comandos esenciales para desplegar, mantener, configurar de la consola de 
+# Cheatsheet 
 
 curl "http://localhost:8000/test" ### Chek if is alive
-# waht is this for?
-#"give sudo granted"
+
+## give sudo granted"
 sudo usermod -aG sudo root
-
-## Get into each docker container for debug --- Waht does this mean ? "Get into each container"?
-sudo docker build -t image_biotablero plumber/ # Create an image from our container
-sudo docker run -d -p 8000:8000 --name biotablero -v /data:/data image_biotablero
-docker logs biotablero  # Get the container logs
-docker ps --all  # Get the running containers
-sudo docker exec -it biotablero /bin/bash # Get into the container
-sudo docker exec -it biotablero_biotablero-api.1.n2rtlbos6mqajn82y49kq76n2 /bin/bash
-sudo docker stop biotablero # Stop container
-sudo docker restart biotablero # restart container
-sudo docker image ls # List available images
-sudo docker rm biotablero # Remove container
-sudo docker rmi image_biotablero # Remove image
-docker service rm $(docker service ls -q) # remove al services
-
 
 # Tree -- list files and folders
 tree -d /data # d only dirs
@@ -26,36 +11,68 @@ du ch  *  ## Folder size
 du -sh * | sort -h
 df -aTh  # check mounted data
 df -h . # all disk available/used
-lsblk -f # check size in mounted units
 
-## Mounting external drive # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-detaching-volume.html
-sudo mkfs -t xfs -f /dev/xvdg
-sudo umount -d -l /dev/xvdb
-
-## Unmounting external drive
-umount -d /dev/sdh
-ls --sort=size -l ## sort by size
+# Mounting and unmounting external drive # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-detaching-volume.html
 
 lsblk # check units
 lsblk -f # check units full
-sudo mkdir /data
+
+## Mount
+sudo mkdir /data  #create /data in the  root direcrory 
+### Nitro System
 sudo file -s /dev/nvme1n1 # prepare mount
 sudo mkfs -t xfs /dev/nvme1n1 # initialize // work good if unit is empty
 sudo mount /dev/nvme1n1 /data # Mount data
+### Old system.
+sudo file -s /dev/xvdb # 
+sudo mkfs -t xfs /dev/xvdb # initialize // work good if unit is empty
+sudo mount /dev/xvdb /data # Mount data
+
+## Unmount
+umount -d /dev/sdh
+ls --sort=size -l ## sort by size
+
+sudo mkfs -t xfs -f /dev/xvdg
+sudo umount -d -l /dev/xvdg
+# Nitro System
+sudo mkfs -t xfs -f /dev/nvme1n1 
+sudo umount -d -l /dev/nvme1n1 
+
+# After reboot -- mount external data
+sudo mount /dev/xvdg /data # Old Instance Type
+sudo mount /dev/nvme1n1 /data # Nitro System 
+
+# Docker operations
+
+## Start
+sudo docker build -t image_biotablero plumber/ # Create an image from our container
+sudo docker run -d -p 8000:8000 --name biotablero -v /data:/data image_biotablero
+## Check history 
+docker logs biotablero  # Get the container logs
+docker ps --all  # Get the running containers
+## Get into each docker container for debug --- What does this mean? "Get into each container"?
+sudo docker exec -it biotablero /bin/bash # Get into the container
+sudo docker exec -it biotablero_biotablero-api.1.n2rtlbos6mqajn82y49kq76n2 /bin/bash
+## Stop
+sudo docker stop biotablero # Stop container
+sudo docker restart biotablero # restart container
+sudo docker image ls # List available images
+sudo docker rm biotablero # Remove biotablero container
+sudo docker rmi image_biotablero # Remove biotablero image (static, from here the containers are built)
+docker service rm $(docker service ls -q) # remove al servicesCheck logs of dockers
+
+## Run container
+docker exec -it biotablero_biotablero-api. /bin/bash  
+# hit tab after the period (.) to get a particular docker name, since has a hash tag 
+
+## Check logs
+docker service logs biotablero_biotablero-api
 
 
-## After reboot -- mount external data
-sudo mount /dev/xvdg /data
-sudo mount /dev/nvme1n1 /data
-
-## Check logs of dockers
-
-##
 ## Launch swarm -- usefull for after reboot --------------
-##
+
 cd ~/plumber/  # go to file location
 docker service rm $(docker service ls -q) # stop services
-docker service rm $(docker service ls -q) 
 time docker-compose build # Requires a new biotablero_api.R
 sudo docker swarm init # Create services
 sudo docker stack deploy -c docker-compose.yml biotablero # Init services. take some secods
@@ -83,9 +100,11 @@ sudo docker rmi $(sudo docker images -f "dangling=true" -q) # dangling images
 # sudo docker ps -a | cut -d ' ' -f 1 | xargs sudo docker rm
 #docker rm $(docker ps -aq)
 docker rmi biotablero:latest
-#docker rmi $(docker images -q) # delete all images
-#docker rmi $(docker images -q) # delete all images
+docker rmi $(docker images -q) # delete all images
 docker image ls
+sudo docker image prune -a # removes all unused images
+sudo docker kill $(docker ps -q) # kill (stop) all running containers
+sudo docker rm --force $(docker ps -a -q) #force stop all running containers
 
 
 # Update Shiny
@@ -100,14 +119,6 @@ sudo rm /srv/shiny-server/gedivis/*
 sudo su - -c "R -e \"shinyParallel::installShinyParallel('/home/vmuser/gedivis/', max.sessions = 25)\"" # home/shinyusername/
 sudo rm /srv/shiny-server/gedivis2 -R
 sudo cp /home/vmuser/gedivis /srv/shiny-server/gedivis2 -R
-
-## Run container
-docker exec -it biotablero_biotablero-api. /bin/bash  
-# hit tab after the period (.) to get a particular docker name, since has a hash tag 
-
-## Check logs
-docker service logs biotablero_biotablero-api
-
 
 
 #### File sizes
