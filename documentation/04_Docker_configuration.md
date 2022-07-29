@@ -17,23 +17,21 @@ Un archivo ´README´ (dónde?) contiene los parámetros finales requeridos para
 # Instalar programas y configurar el sistema anfitrión (system host)
 
 ## 1. Montar unidad externa (60GB) que contiene los datos. Se le asigna el directorio ´/data´
-
-```bash
 Instancia TP
+```bash
 lsblk
 sudo mkdir /data
 sudo file -s /dev/xvdb
 sudo mkfs -t xfs /dev/xvdb
 sudo mount /dev/xvdb /data
-
-AWS Nitro System (Mas reciente)
-
+```
+## AWS Nitro System (Mas reciente)
+```bash
 lsblk
 sudo mkdir /data
 sudo file -s /dev/nvme1n1 # chequea la unidad)
 sudo mkfs -t xfs /dev/nvme1n1 #si la unidad está vacía) Atención, si ya hay datos en la unidad, como despues de reiniciar, este comando la formatea.
 sudo mount /dev/nvme1n1 /data
-
 ```
 
 ## 2. Instalar docker, docker-compose, 7zip y tree.
@@ -263,6 +261,7 @@ sudo 7za x -o/data /data/templates.7z
 Ejecutar el comando   docker-compose para montar (build) las imágenes de 'biotablero' y 'mongo'.
 
 ```bash
+cd plumber
 sudo docker-compose up -d
 ```
 
