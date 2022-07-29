@@ -1,7 +1,7 @@
 ## 0. Librerias y rutas
 library(rgdal)
 library(rgeos)
-library(forestChange)
+library(ecochange)
 
 source('/Users/sputnik/Documents/biotablero_api/biotablero_fun.R') # >>>>>>>> Cambiar ruta
 
