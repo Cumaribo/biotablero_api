@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FROM rocker/r-ver:latest
 
 # Install the linux libraries needed
@@ -43,3 +44,47 @@ EXPOSE 8000
 
 # Call main script
 ENTRYPOINT ["Rscript", "main.R"]
+=======
+FROM rocker/r-ver:latest
+
+# Install the linux libraries needed
+RUN apt-get update -qq && apt-get install -y \
+  libssl-dev \
+  libcurl4-gnutls-dev \
+  libgdal-dev \
+  libproj-dev  \
+  gdal-bin
+
+# Install mongo prerequisites
+RUN apt-get install -y libssl-dev libsasl2-dev libudunits2-dev
+
+# Install R packages
+RUN R -e "install.packages('rgdal')"
+RUN R -e "install.packages('raster')"
+RUN R -e "install.packages('gdalUtils')"
+RUN R -e "install.packages('rgeos')"
+RUN R -e "install.packages('plumber')"
+RUN R -e "install.packages('foreign')"
+RUN R -e "install.packages('landscapemetrics')"
+RUN R -e "install.packages('mongolite')"
+RUN R -e "install.packages('aws.s3')"
+RUN R -e "install.packages('gdalUtilities')"
+RUN R -e "install.packages('rasterDT')"
+RUN R -e "install.packages('rvest')"
+RUN R -e "install.packages('dplyr')"
+#RUN R -e "install.packages('forestChange')"
+
+
+
+# Assign the temporal folder in the external drive
+RUN R -e "write('TMP = "/data/tempR"', file=file.path(Sys.getenv('R_USER'), '.Renviron'))"
+
+# Copy everything from the current directory into the container
+COPY / /
+
+# open port 8000 to traffic
+EXPOSE 8000
+
+# Call main script
+ENTRYPOINT ["Rscript", "main.R"]
+>>>>>>> 870c0e6534554ceddfab6783fc859cff1940ffc1
