@@ -25,7 +25,7 @@ RUN R -e "install.packages('gdalUtilities')"
 RUN R -e "install.packages('rasterDT')"
 RUN R -e "install.packages('rvest')"
 RUN R -e "install.packages('dplyr')"
-#RUN R -e "install.packages('forestChange')"
+RUN R -e "install.packages('ecochange')"
 
 
 
