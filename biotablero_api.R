@@ -1,5 +1,5 @@
 ### Load required libraries
-suppressWarnings(suppressPackageStartupMessages(library(forestChange)))
+suppressWarnings(suppressPackageStartupMessages(library(ecochange)))
 suppressWarnings(suppressPackageStartupMessages(library(gdalUtils)))
 suppressWarnings(suppressPackageStartupMessages(library(rgeos)))
 suppressWarnings(suppressPackageStartupMessages(library(rgdal)))
@@ -716,8 +716,8 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         stop()
       }
       
-      if (! sour %in% c('hansen', 'ideam')){
-        return(paste0('ERROR: Source "', sour, '" not "ideam" or "hansen" for forest source'))
+      if (! sour %in% c('hansen', 'ideam' , 'hansen_armonized')){
+        return(paste0('ERROR: Source "', sour, '" not "ideam", "hansen" or "hansen_armonized" for forest source'))
         stop()
       }
       
@@ -733,9 +733,9 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
       ebvyearnum <- as.numeric(strsplit(ebvyear, ':')[[1]])
       
-      if (sour == 'hansen'){
-        if( ! all(ebvyearnum %in% 2000:2018)){
-          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2018 for "hansen" source'))
+      if (sour == 'hansen' | sourc =='hansen_armonized'){
+        if( ! all(ebvyearnum %in% 2000:2021)){
+          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen" source'))
           stop()
         }
       } else if (sour == 'ideam'){
@@ -836,8 +836,15 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
         colnames(result)[2] <- ebvstat
         
+        fcmask <- ecochange::echanges(pol = stk, 
+                                      eco = c('treecover2000','lossyear'),
+                                      eco_range = c(ebvporcrange,100), 
+                                      change_vals = (ebvyearnum[1]:ebvyearnum[2]) + del10)
+                 fcmetric <- ecochange::EBVstats(fcmask, stats = ebvstat)
+                 fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
+                 result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
+                 colnames(result)[2] <- ebvstat
       }
-      
       rownames(result) <- result$year <- result$year - del10
       result <- subset(result, year %in% ebvyearnum[1]:ebvyearnum[2])
       
