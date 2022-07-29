@@ -1,5 +1,4 @@
 ### Load required libraries
-suppressWarnings(suppressPackageStartupMessages(library(ecochange)))
 suppressWarnings(suppressPackageStartupMessages(library(gdalUtils)))
 suppressWarnings(suppressPackageStartupMessages(library(rgeos)))
 suppressWarnings(suppressPackageStartupMessages(library(rgdal)))
@@ -9,6 +8,7 @@ suppressWarnings(suppressPackageStartupMessages(library(foreign)))
 suppressWarnings(suppressPackageStartupMessages(library(mongolite)))
 suppressWarnings(suppressPackageStartupMessages(library(gdalUtilities)))
 suppressWarnings(suppressPackageStartupMessages(library(rasterDT)))
+suppressWarnings(suppressPackageStartupMessages(library(ecochange)))
 # suppressWarnings()
 
 raster_count <- structure(function # Count the pixels in a given raster
