@@ -70,6 +70,7 @@ sudo docker run -d -p 8000:8000 --name biotablero -v /data:/data image_biotabler
 docker logs biotablero  # Get the container logs
 docker ps --all  # Get the running containers
 docker service logs biotablero_biotablero-api
+docker service logs api_biotablero-api
 ```
 ### Get into each docker container for debug --- What does this mean? "Get into each container"?
 ```bash
