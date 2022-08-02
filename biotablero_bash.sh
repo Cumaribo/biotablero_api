@@ -21,7 +21,6 @@ sudo usermod -aG docker ubuntu
 sudo systemctl start docker
 sudo systemctl enable docker
 
-#sudo reboot
 
 ## Download docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -180,6 +179,7 @@ sudo 7za x -o/data/forest /data/forest.7z
 sudo 7za x -o/data /data/rli_surface.7z
 sudo 7za x -o/data /data/templates.7z
 
+sudo reboot
 
 ## Launch docker, but first move the the folder
 cd ~/plumber/ # here shpuld be the conifg. files
