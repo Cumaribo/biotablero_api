@@ -14,7 +14,7 @@ RUN apt-get install -y libssl-dev libsasl2-dev libudunits2-dev
 # Install R packages
 RUN R -e "install.packages('rgdal')"
 RUN R -e "install.packages('raster')"
-RUN R -e "install.packages('gdalUtils')"
+# RUN R -e "install.packages('gdalUtils')"
 RUN R -e "install.packages('rgeos')"
 RUN R -e "install.packages('plumber')"
 RUN R -e "install.packages('foreign')"
