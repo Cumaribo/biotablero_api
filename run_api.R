@@ -3,7 +3,7 @@ library(rgdal)
 library(rgeos)
 #library(ecochange)
 
-source('/Users/sputnik/Documents/biotablero_api/biotablero_fun.R') # >>>>>>>> Cambiar ruta
+source('/Users/sputnik/Documents/biotablero_api/biotablero_fun.R') 
 
 ## 1. Cargar un polígono
 # pol <- writeWKT(dep[grep('AMAZONAS', dep$NOM_DPTO), ])
@@ -21,7 +21,7 @@ writeOGR(SpatialPolygonsDataFrame(polyg, data.frame(id = 1)), '/Users/sputnik/Do
 
 aws <- 'ec2-3-137-83-192.us-east-2.compute.amazonaws.com'
 #aws <- 'ec2-3-84-170-26.compute-1.amazonaws.com'
-localDataPath <- '/Users/sputnik/Documents/Biotablero/data'
+localDataPath <- '/Users/sputnik/Documents/biotablero_api/data'
 
 ## Understanding the API
 
