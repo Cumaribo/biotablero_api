@@ -1,4 +1,4 @@
-## Get into the forest metrics ------
+## Get into the forest metrics
 metric <- 'forest'
 ebvstat <- 'area'
 sour <- 'arm'
@@ -35,6 +35,10 @@ test_for <- function(metric = NA, lay = NA, polID = NA, pol = NA,
          ebvstat = NA, sour = NA, ebvyear = NA, ebvporcrange = NA,
          dataPath = '/data') {
 
+  dots <- tryCatch(c(...), error = function(e) NULL)
+  tStart <- Sys.time()
+  print(paste0('====================================================='))
+  print(paste0('Metric: ', metric, ' - Date: ', format(as.POSIXct(Sys.time(), tz="CET"), tz="America/Bogota",usetz=TRUE)  ))  
   if(metric %in% 'test'){
     result <- "Welcome to Biotablero API. Test function from 'biotablero' endpoint"
     return(result)
@@ -62,11 +66,7 @@ test_for <- function(metric = NA, lay = NA, polID = NA, pol = NA,
     stop()
   }
   
-  dots <- tryCatch(c(...), error = function(e) NULL)
-  tStart <- Sys.time()
-  print(paste0('====================================================='))
-  print(paste0('Metric: ', metric, ' - Date: ', format(as.POSIXct(Sys.time(), tz="CET"), tz="America/Bogota",usetz=TRUE)  ))
-  
+
 
 if (metric %in% 'forest') { 
   
@@ -98,9 +98,9 @@ if (metric %in% 'forest') {
   
   ebvyearnum <- as.numeric(strsplit(ebvyear, ':')[[1]])
   
-  if (sour == 'hansen' | sour =='hansen_armonized'){
+  if (sour == 'hansen' | sour =='arm'){
     if( ! all(ebvyearnum %in% 2000:2021)){
-      return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen" source'))
+      return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen" or "arm" source'))
       stop()
     }
   } else if (sour == 'ideam'){
@@ -233,6 +233,8 @@ test105 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol,
                      ebvstat = 'area', sour = 'arm', ebvyear = biotForYearString , ebvporcrange = biotForPorcString,
                      dataPath = '/Users/sputnik/Documents/Biotablero/data') 
 
+rm(test105)
+
 test305 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
                   ebvstat = 'area', sour = 'hansen', ebvyear = biotForYearString , ebvporcrange = biotForPorcString,
                   dataPath = '/Users/sputnik/Documents/Biotablero/data') 
@@ -279,3 +281,14 @@ suppressWarnings(gdalUtilities::gdalwarp(srcfile = paste0(dataPath, '/forest/tre
 test1$result
 test105$result
 test305$result
+
+
+fcmask <- ecochange::echanges(pol = stk, 
+                              eco = c('treecover2000','lossyear'),
+                              eco_range = c(ebvporcrange,100), ###
+                              change_vals = (ebvyearnum[1]:ebvyearnum[2]) + del10)
+fcmetric <- ecochange::EBVstats(fcmask, stats = ebvstat)
+fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
+result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
+colnames(result)[2] <- ebvstat
+}

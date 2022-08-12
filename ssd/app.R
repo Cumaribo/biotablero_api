@@ -24,7 +24,7 @@ prj_wgs84 <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 
 # setwd('C:/GoogleDrive/IAvH/V2/08_SSD/')
 
-outDir <- ifelse( Sys.info()["sysname"] == "Linux",  '/home/shiny/tmpR/', 'C:/temp/Rtmp/'); dir.create(outDir)
+outDir <- ifelse( Sys.info()["sysname"] == "Linux",  '/home/shiny/tmpR/', '/Users/sputnik/Documents/Biotablero/temp/Rtmp'); dir.create(outDir)
 sapply(grep(paste0(outDir, '//*.+'), list.dirs(outDir), value = TRUE), unlink, recursive = TRUE, force = TRUE)
 print(paste('WD: ', getwd()))
 isShpLoad <<- FALSE
@@ -163,7 +163,6 @@ ui <- dashboardPage(skin = 'green',
                                                                           "umbral en cobertura de dosel que puede personalizarse, y que permite definir",
                                                                           "interactivamente los valores con los que algunos pixeles serán entendidos como bosques")
                                                                   ), 
-                                                                  ### add source to armonized!!!
                                                                   HTML(paste("<p>Acceda a los datos originales <a href='http://www.siac.gov.co/catalogo-de-mapas'>acá</a> (buscar 'Bosque no bosque')", 
                                                                              "y a los metadatos <a href='http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=098D65EEF6FF3B4CA3903BCC3A2AF901#/metadata/edcb9c25-c7f2-466b-9083-42453e288573'>acá</a> </p>")
                                                                   )
@@ -173,7 +172,7 @@ ui <- dashboardPage(skin = 'green',
                                            
                                   column(width = 4, 
                                          selectInput(inputId = "aoi_forest", label = "Área de estudio: ", choices =  c('Dibujar'), selected = 'Dibujar'),
-                                         selectInput(inputId = "forestsour", label = "Fuente: ", choices =  c('ideam', 'hansen', 'arm'), selected = 'hansen')),
+                                         selectInput(inputId = "forestsour", label = "Fuente: ", choices =  c('ideam', 'hansen', 'hansen_armonized'), selected = 'hansen')),
                                   # selectInput(inputId = "forestvar", label = "Metric: ",
                                   #             choices =  c('area'), selected = 'area'),
                                   column(width = 4, sliderInput(inputId = "forestyearrng", label = 'Rango temporal',

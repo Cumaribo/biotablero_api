@@ -100,7 +100,6 @@ mongoFields <- c("kingdom", "phylum", "class", "order", "family", "genus", "spec
 
 
 #* @apiTitle BiotableroAPI
-
 #* Testing the API
 #* @param None None parameter
 #* @get /test
@@ -154,7 +153,7 @@ function(pol = NA){
 }
 
 
-#* List the available stpatial templates
+#* List the available spatial templates
 #* @param templatesPath The path containign the available layers
 #* @get /listTemplates
 function(templatesPath = '/data/templates'){
@@ -251,14 +250,14 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       return("ERROR: Not a valid WKT object")
       stop()
     }
-    
+    #return(wkt)}}
     wkt@proj4string@projargs <- '+proj=longlat +ellps=GRS80 +no_defs'
     
     ## Project polygon in order to clip and get areas from projected original layers
-    wkt_pcs <- suppressWarnings(st_transform(wkt, crs = CRS(prj)))
+    wkt_pcs <- suppressWarnings(spTransform(wkt, CRSobj = CRS(prj)))
     wkt_pcs$km2 <- suppressWarnings(sapply(slot(wkt_pcs, "polygons"), function(x) sum(sapply(slot(x, "Polygons"), slot, "area")))/1000000)
     
-    ## Establish a treshold for the polygon. Colombia surface is 1,141,748 km2
+    ## Establish a threshold for the polygon. Colombia surface is 1,141,748 km2
     if (sum(wkt_pcs$km2) > thresholdKm2){
       return( paste0("ERROR: Polygon bigger than the threshold (", thresholdKm2, " km2)") )
       stop()
@@ -722,7 +721,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       }
       
       if (! sour %in% c('hansen', 'ideam' , 'arm')){
-        return(paste0('ERROR: Source "', sour, '" not "ideam", "hansen" or "hansen_armonized" for forest source'))
+        return(paste0('ERROR: Source "', sour, '" not "ideam", "hansen" or "arm" for forest source'))
         stop()
       }
       
@@ -738,7 +737,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
       ebvyearnum <- as.numeric(strsplit(ebvyear, ':')[[1]])
       
-      if (sour == 'hansen' | sourc =='arm'){
+      if (sour == 'hansen' | sour =='arm'){
         if( ! all(ebvyearnum %in% 2000:2021)){
           return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen or armonized hansen" source'))
           stop()
@@ -832,18 +831,9 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         ## Use ecochange package
         stk <- stack(treeTemp, maskTemp) 
-        # names(stk) <- c("treecover2000", "lossyear")
-        # fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
-        #                                perc = eval(parse(text = ebvporcrange)), pr.utm = FALSE)
-        # fcmetric <- forestChange::EBVmetric(fcmask, what = ebvstat)
-        # fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
-        # result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
-        # colnames(result)[2] <- ebvstat
-        
         fcmask <- ecochange::echanges(ps = stk, 
                                       eco = c('treecover2000','lossyear'),
-                                      change = 'lossyear',
-                                      eco_range = c(ebvporcrange,100), 
+                                      eco_range = c(ebvporcrange,100), ###
                                       change_vals = (ebvyearnum[1]:ebvyearnum[2]) + del10)
                  fcmetric <- ecochange::EBVstats(fcmask, stats = ebvstat)
                  fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
@@ -937,9 +927,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
             break
           }
         } 
-        
-        
-        
         
         
         ## Get the pixels ID in the region
