@@ -100,8 +100,8 @@ time docker-compose build # Requires a new biotablero_api.R
 sudo docker swarm init # Create services
 sudo docker stack deploy -c docker-compose.yml biotablero # Init services. take some secods
 sleep 30 # Sleep some time before start
-curl "http://localhost:8080/test"
-curl "http://localhost:8080/polsizekm2?pol=POLYGON((-74.133545%204.144818,-73.817139%203.741479,-74.572998%203.390597,-74.133545%204.144818))"
+curl "http://localhost:8000/test"
+curl "http://localhost:8000/polsizekm2?pol=POLYGON((-74.133545%204.144818,-73.817139%203.741479,-74.572998%203.390597,-74.133545%204.144818))"
 curl "ec2-3-137-83-192.us-east-2.compute.amazonaws.com:8080/polsizekm2?pol=POLYGON((-74.133545%204.144818,-73.817139%203.741479,-74.572998%203.390597,-74.133545%204.144818))" 
 ```
 
