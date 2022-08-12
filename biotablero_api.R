@@ -4,6 +4,7 @@ suppressWarnings(suppressPackageStartupMessages(library(rgeos)))
 suppressWarnings(suppressPackageStartupMessages(library(rgdal)))
 suppressWarnings(suppressPackageStartupMessages(library(raster)))
 suppressWarnings(suppressPackageStartupMessages(library(plumber)))
+suppressWarnings(suppressPackageStartupMessages(library(sf)))
 suppressWarnings(suppressPackageStartupMessages(library(foreign)))
 suppressWarnings(suppressPackageStartupMessages(library(mongolite)))
 suppressWarnings(suppressPackageStartupMessages(library(gdalUtilities)))
@@ -181,7 +182,7 @@ function(template = NA, templatesPath = '/data/templates'){
 #* @param polID The ID of polygon or element from the given layer or spatial extent. Optional in all metrics
 #* @param pol A polygon in format WKT. Requeried in almost all metrics.
 #* @param ebvstat The Essential Biodiversity Variables so be calculated. 'area' or 'all' available 
-#* @param sour The data source to calculate the metric. If metric is 'forest', 'hansen' and 'ideam' are allowed. If metric is 'species', the values 'biomod', 'uicn' and 'records' are allowed.
+#* @param sour The data source to calculate the metric. If metric is 'forest', 'hansen', 'arm' and  'ideam' are allowed. If metric is 'species', the values 'biomod', 'uicn' and 'records' are allowed.
 #* @param cellSize The cell size for 'surface' metric. 1, 2, 5, 10, 20, 50, 100, 200, 500 are allowed. Required in 'surface' metric.
 #* @param ebvyear The years to estimate the forest metrics. Requierd in 'forest' metric.
 #* @param ebvporcrange The threshold range values used to consider the forest cover extent in each pixel as a forest. Requierd in 'forest' metric.
@@ -207,7 +208,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
   # ebvstat = NULL; sour = NULL; ebvyear = NULL; ebvporcrange = NULL;
   # spFormat = NULL; spRecordsFields = NULL; spRecordsTabulate = NULL;
   # clclevel = NULL; cellSize = NULL; rasterLayer = FALSE; dataPath = '/data'
-  
   dots <- tryCatch(c(...), error = function(e) NULL)
   tStart <- Sys.time()
   print(paste0('====================================================='))
@@ -244,6 +244,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
     wkt <- suppressWarnings(tryCatch(SpatialPolygonsDataFrame(readWKT(gsub('%20', ' ', pol)), data.frame(ID = 1)),
                     error = function(e) NULL))
     
+    
     if (is.null(wkt)){
       return("ERROR: Not a valid WKT object")
       stop()
@@ -252,7 +253,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
     wkt@proj4string@projargs <- '+proj=longlat +ellps=GRS80 +no_defs'
     
     ## Project polygon in order to clip and get areas from projected original layers
-    wkt_pcs <- suppressWarnings(spTransform(wkt, CRSobj = CRS(prj)))
+    wkt_pcs <- suppressWarnings(st_transform(wkt, crs = CRS(prj)))
     wkt_pcs$km2 <- suppressWarnings(sapply(slot(wkt_pcs, "polygons"), function(x) sum(sapply(slot(x, "Polygons"), slot, "area")))/1000000)
     
     ## Establish a treshold for the polygon. Colombia surface is 1,141,748 km2
@@ -323,6 +324,8 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
                                         dstnodata = 999,
                                         crop_to_cutline = TRUE,
                                         overwrite = TRUE))
+        
+        
         
         rastC <- raster_count(rast, n256 = n256)
         rastC <- rastC[which(rastC$count > 0 & !is.na(rastC$id)), ]
@@ -716,7 +719,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         stop()
       }
       
-      if (! sour %in% c('hansen', 'ideam' , 'hansen_armonized')){
+      if (! sour %in% c('hansen', 'ideam' , 'arm')){
         return(paste0('ERROR: Source "', sour, '" not "ideam", "hansen" or "hansen_armonized" for forest source'))
         stop()
       }
@@ -733,9 +736,9 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
       ebvyearnum <- as.numeric(strsplit(ebvyear, ':')[[1]])
       
-      if (sour == 'hansen' | sourc =='hansen_armonized'){
+      if (sour == 'hansen' | sourc =='arm'){
         if( ! all(ebvyearnum %in% 2000:2021)){
-          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen" source'))
+          return(paste0('ERROR: ebvyear "', ebvyear, '" not in 2000:2021 for "hansen or armonized hansen" source'))
           stop()
         }
       } else if (sour == 'ideam'){
@@ -825,7 +828,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
       } else {
         
-        ## Use ForestChange package
+        ## Use ecochange package
         stk <- stack(treeTemp, maskTemp) 
         # names(stk) <- c("treecover2000", "lossyear")
         # fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
@@ -835,8 +838,9 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         # result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
         # colnames(result)[2] <- ebvstat
         
-        fcmask <- ecochange::echanges(pol = stk, 
+        fcmask <- ecochange::echanges(ps = stk, 
                                       eco = c('treecover2000','lossyear'),
+                                      change = 'lossyear',
                                       eco_range = c(ebvporcrange,100), 
                                       change_vals = (ebvyearnum[1]:ebvyearnum[2]) + del10)
                  fcmetric <- ecochange::EBVstats(fcmask, stats = ebvstat)
@@ -844,6 +848,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
                  result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
                  colnames(result)[2] <- ebvstat
       }
+      
       rownames(result) <- result$year <- result$year - del10
       result <- subset(result, year %in% ebvyearnum[1]:ebvyearnum[2])
       

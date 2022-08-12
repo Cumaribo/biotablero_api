@@ -3,7 +3,7 @@ library(rgdal)
 library(rgeos)
 #library(ecochange)
 
-source('/Users/sputnik/Documents/biotablero_api/biotablero_fun.R') 
+source('/Users/sputnik/Documents/biotablero_api/ssd/biotablero_fun.R') 
 
 ## 1. Cargar un polígono
 # pol <- writeWKT(dep[grep('AMAZONAS', dep$NOM_DPTO), ])
