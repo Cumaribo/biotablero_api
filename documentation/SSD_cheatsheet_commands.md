@@ -1,8 +1,10 @@
 # Cheatsheet 
-
+### Chek if server is alive and responsive
+```bash
 curl "http://localhost:8000/test" ### Chek if is alive
+```
 
-## give sudo granted
+## Granted sudo control
 ```bash
 sudo usermod -aG sudo root
 ```
