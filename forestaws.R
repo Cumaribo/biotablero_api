@@ -233,7 +233,7 @@ ebvyear2 <- "2000:2016"
 
 test105 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
                      ebvstat = 'area', sour = 'arm', ebvyear = ebvyear1 , ebvporcrange = biotForPorcString,
-                     dataPath = '/Users/sputnik/Documents/Biotablero/data') 
+                     dataPath = '/data') 
 test105$result
 
 test106 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
