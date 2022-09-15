@@ -704,7 +704,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
     }
     
-    
     ## Get into the forest metrics ------
     if (metric %in% 'forest') { 
       
@@ -828,7 +827,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
       } else {
         
-        ## Use ecochange package
+        ## Use  package ecochange
         stk <- stack(treeTemp, maskTemp) 
         fcmask <- ecochange::echanges(ps = stk, 
                                       eco = c('treecover2000','lossyear'),

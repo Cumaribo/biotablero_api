@@ -26,10 +26,9 @@ thresholdKm2 <- 1000000
 
 biotForYearString <- as.character(paste0(forestyearrng[1], ':', forestyearrng[2]))
 biotForPorcString <- as.character(paste0(forestporcrng[1], ':', forestporcrng[2]))
-  
 ebvporcrange <- biotForPorcString
 ebvporcrangenum <- as.numeric(strsplit(ebvporcrange, ':')[[1]])
-ebvyear <- biotForPorcString 
+ebvyear <- biotForYearString 
 
 test_for <- function(metric = NA, lay = NA, polID = NA, pol = NA, 
          ebvstat = NA, sour = NA, ebvyear = NA, ebvporcrange = NA,
@@ -188,7 +187,7 @@ if (metric %in% 'forest') {
     
   } else {
     
-    ## Use ForestChange package
+    ## Use ecoChange package
     stk <- stack(treeTemp, maskTemp) 
     # names(stk) <- c("treecover2000", "lossyear")
     # fcmask <- forestChange::FCMask(pol = stk, year = (ebvyearnum[1]:ebvyearnum[2]) + del10, 
@@ -227,10 +226,25 @@ if (metric %in% 'forest') {
 }
 
 
-test105 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
-                     ebvstat = 'area', sour = 'arm', ebvyear = biotForYearString , ebvporcrange = biotForPorcString,
-                     dataPath = '/Users/sputnik/Documents/Biotablero/data') 
+#hansen
+ebvyear1 <- "2000:2021" 
+#ideam
+ebvyear2 <- "2000:2016" 
 
+test105 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
+                     ebvstat = 'area', sour = 'arm', ebvyear = ebvyear1 , ebvporcrange = biotForPorcString,
+                     dataPath = '/Users/sputnik/Documents/Biotablero/data') 
+test105$result
+
+test106 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
+                    ebvstat = 'area', sour = 'hansen', ebvyear = ebvyear1 , ebvporcrange = biotForPorcString,
+                    dataPath = '/Users/sputnik/Documents/Biotablero/data') 
+test106$result
+
+test107 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
+                    ebvstat = 'area', sour = 'ideam', ebvyear = ebvyear2 , ebvporcrange = biotForPorcString,
+                    dataPath = '/Users/sputnik/Documents/Biotablero/data') 
+test107$result
 rm(test105)
 
 test305 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
