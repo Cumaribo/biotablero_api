@@ -13,7 +13,6 @@ suppressWarnings(suppressPackageStartupMessages(library(ecochange)))
 # suppressWarnings()
 
 
-
 raster_count <- structure(function # Count the pixels in a given raster
                           ### This function generate a frequency table for a given raster dataset
                           (

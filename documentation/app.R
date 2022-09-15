@@ -172,7 +172,7 @@ ui <- dashboardPage(skin = 'green',
                                            
                                   column(width = 4, 
                                          selectInput(inputId = "aoi_forest", label = "Área de estudio: ", choices =  c('Dibujar'), selected = 'Dibujar'),
-                                         selectInput(inputId = "forestsour", label = "Fuente: ", choices =  c('ideam', 'hansen', 'arm'), selected = 'hansen')),
+                                         selectInput(inputId = "forestsour", label = "Fuente: ", choices =  c('ideam', 'hansen', 'hansen_armonized'), selected = 'hansen')),
                                   # selectInput(inputId = "forestvar", label = "Metric: ",
                                   #             choices =  c('area'), selected = 'area'),
                                   column(width = 4, sliderInput(inputId = "forestyearrng", label = 'Rango temporal',

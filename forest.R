@@ -66,8 +66,6 @@ test_for <- function(metric = NA, lay = NA, polID = NA, pol = NA,
     stop()
   }
   
-
-
 if (metric %in% 'forest') { 
   
   if (is.null(ebvstat) | is.null(sour)){
