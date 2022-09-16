@@ -238,12 +238,12 @@ test105$result
 
 test106 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
                     ebvstat = 'area', sour = 'hansen', ebvyear = ebvyear1 , ebvporcrange = biotForPorcString,
-                    dataPath = '/Users/sputnik/Documents/Biotablero/data') 
+                    dataPath = '/data') 
 test106$result
 
 test107 <- test_for(metric = 'forest', lay = NA, polID = NA, pol = simplePol, 
                     ebvstat = 'area', sour = 'ideam', ebvyear = ebvyear2 , ebvporcrange = biotForPorcString,
-                    dataPath = '/Users/sputnik/Documents/Biotablero/data') 
+                    dataPath = '/data') 
 test107$result
 rm(test105)
 
@@ -258,36 +258,3 @@ test <- test_for(metric = 'test', lay = NA, polID = NA, pol = NA,
   
 wkt <- suppressWarnings(tryCatch(SpatialPolygonsDataFrame(readWKT(gsub('%20', ' ', pol)), data.frame(ID = 1)),
                                  error = function(e) NULL))
-
-  ## Get into the forest metrics ------
-
-dataPath <- '/Users/sputnik/Documents/Biotablero/data'
-
-wkt <- suppressWarnings(tryCatch(SpatialPolygonsDataFrame(readWKT(gsub('%20', ' ', pol)), data.frame(ID = 1)),
-                                 error = function(e) NULL))
-
-wkt <- suppressWarnings(tryCatch(SpatialPolygonsDataFrame(readWKT(gsub('%20', ' ', simplePol)), data.frame(ID = 1)),
-                                 error = function(e) NULL))
-
-tempRastDir <- paste0(dataPath, '/tempR/', timeMark, 
-                      '_r1', round(runif(1, 0, 100)), 
-                      '_r2', round(runif(1, 0, 100)), 
-                      '_r3', basename(tempfile()))
-dir.create(tempRastDir, recursive = TRUE)
-print(paste0('Temp dir: ', tempRastDir))
-
-rasterOptions(tmpdir = tempRastDir, format = 'GTiff')
-treeTemp <- paste0(tempRastDir, '/', basename(tempfile()), 'tree.tif')
-lossTemp <- paste0(tempRastDir, '/', basename(tempfile()), 'loss.tif')
-
-
-wkt_pcs <- suppressWarnings(st_transform(wkt, crs = CRS(prj)))
-wkt_pcs$km2 <- suppressWarnings(sapply(slot(wkt_pcs, "polygons"), function(x) sum(sapply(slot(x, "Polygons"), slot, "area")))/1000000)
-## Create a gdal-readable object from WKT
-
-pol <- simplePol
-wkt <- suppressWarnings(tryCatch(SpatialPolygonsDataFrame(readWKT(gsub('%20', ' ', pol)), data.frame(ID = 1)),
-                                 error = function(e) NULL))
-
-wkt_pcs <- suppressWarnings(spTransform(wkt, CRSobj = CRS(prj)))
-wkt_pcs$km2 <- suppressWarnings(sapply(slot(wkt_pcs, "polygons"), function(x) sum(sapply(slot(x, "Polygons"), slot, "area")))/1000000)
