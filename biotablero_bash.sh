@@ -2,7 +2,7 @@
 lsblk
 sudo mkdir /data
 sudo file -s /dev/nvme1n1
-#sudo mkfs -t xfs /dev/xvdb
+sudo mkfs -t xfs /dev/xvdb
 sudo mount /dev/nvme1n1 /data
 
 ## Install git, docker and docker-compose
