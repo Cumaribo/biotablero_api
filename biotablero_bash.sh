@@ -1,9 +1,9 @@
 ## Volumen mount
 lsblk
 sudo mkdir /data
-sudo file -s /dev/nvme1n1
+sudo file -s /dev/xvdb
 sudo mkfs -t xfs /dev/xvdb
-sudo mount /dev/nvme1n1 /data
+sudo mount /dev/xvdb /data
 
 ## Install git, docker and docker-compose
 sudo apt-get update -y
