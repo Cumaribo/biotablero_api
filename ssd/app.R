@@ -11,13 +11,9 @@ library(reshape2)
 # if(!'reshape2' %in% rownames(installed.packages())){installed.packages('reshape2')}
 # if(!'write.xlsx' %in% rownames(installed.packages())){install.packages('write.xlsx')}
 
-# install.packages('rgeos')
-# install.packages('leaflet.extras'
-# install.packages('highcharter')
-
-devtools::source_url("https://raw.githubusercontent.com/gonzalezivan90/biotablero_api/master/biotablero_fun.R")
+devtools::source_url("https://github.com/Cumaribo/biotablero_api/blob/master/biotablero_fun.R")
 # aws <- 'ec2-3-12-165-32.us-east-2.compute.amazonaws.com' # Prod
-aws <- 'ec2-3-137-83-192.us-east-2.compute.amazonaws.com' # Prod
+aws <- 'ec2-54-196-160-233.compute-1.amazonaws.com' # Prod
 # aws_port <- ':8080'
 
 prj_wgs84 <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"

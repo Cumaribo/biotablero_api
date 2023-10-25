@@ -50,5 +50,5 @@ Error in stopOnLine(lineNum, file[lineNum], e) :
 Calls: <Anonymous> ... tryCatchList -> tryCatchOne -> <Anonymous> -> stopOnLine
 Execution halted
  For some reason gdalUtils is giving a lot of trouble!!!!!
-I solved it  byremoving forestchange
+I solved it  by removing forestchange
 
