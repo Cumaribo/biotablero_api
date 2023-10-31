@@ -103,7 +103,7 @@ sudo mkdir /data/species/biomod
 sudo mkdir /data/species/records
 sudo mkdir /data/surface
 sudo mkdir /data/templates
-sudo mkdir /data/tempR
+sudo mkdir /data/tempR # when transitioning to terra, the temporary data management should become easier
 
 
 ## Unzip data
