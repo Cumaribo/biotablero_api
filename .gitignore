@@ -5,12 +5,8 @@
 README.md
 documentation/key_biotablero.pem
 documentation/02_AWS_configuration.pptx
-<<<<<<< HEAD
 data/.DS_Store
 data/forest
 .DS_Store
 documentation/doc_backend.nb.html
-=======
-documentation/~$02_AWS_configuration.pptx
 s3.env
->>>>>>> 00f5de3 (removed an R script that is not necessary anymore, ignored s3.dev to keep it safe)

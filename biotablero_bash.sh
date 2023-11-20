@@ -26,6 +26,13 @@ sudo systemctl enable docker
 # 
  sudo chmod +x /usr/local/bin/docker-compose
 
+
+### Download deprecated libraries from the CRAN archive
+
+sudo wget https://cran.r-project.org/src/contrib/Archive/your_package/your_package_version.tar.gz
+
+sudo wget https://cran.r-project.org/src/contrib/Archive/rgeos/rgeos_0.6-4.tar.gz
+
 ### Download compressed datasets
 # Species - Biomod
 sudo wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1RRHFMUmEWtPpEyn8su8-AVZbT4-aOtdm' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1RRHFMUmEWtPpEyn8su8-AVZbT4-aOtdm" -O /data/Biomod.7z && rm -rf /tmp/cookies.txt

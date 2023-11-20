@@ -12,10 +12,10 @@ RUN apt-get update -qq && apt-get install -y \
 RUN apt-get install -y libssl-dev libsasl2-dev libudunits2-dev
 
 # Install R packages
-RUN R -e "install.packages('rgdal')"
+RUN R -e "install.packages('/home/ubuntu/rgdal_1.6-7.tar.gz')"
 RUN R -e "install.packages('raster')"
 RUN R -e "install.packages('sf')"
-RUN R -e "install.packages('rgeos')"
+RUN R -e "install.packages('/home/ubuntu/rgeos_0.6-4.tar.gz')"
 RUN R -e "install.packages('plumber')"
 RUN R -e "install.packages('foreign')"
 RUN R -e "install.packages('landscapemetrics')"
