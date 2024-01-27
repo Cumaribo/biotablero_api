@@ -14,7 +14,7 @@ library(reshape2)
 devtools::source_url("https://github.com/Cumaribo/biotablero_api/blob/master/biotablero_fun.R")
 # aws <- 'ec2-3-12-165-32.us-east-2.compute.amazonaws.com' # Prod
 aws <- 'ec2-54-196-160-233.compute-1.amazonaws.com' # Prod
-# aws_port <- ':8080'
+aws_port <- ':8080'
 
 prj_wgs84 <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 
