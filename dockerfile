@@ -15,6 +15,7 @@ COPY rgdal_1.6-7.tar.gz /tmp/
 
 # Install R packages
 RUN R -e "install.packages('sp')"
+RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('/tmp/rgdal_1.6-7.tar.gz', repos = NULL, type = 'source')"
 RUN R -e "install.packages('raster')"
 RUN R -e "install.packages('sf')"
@@ -24,6 +25,7 @@ RUN R -e "install.packages('foreign')"
 RUN R -e "install.packages('landscapemetrics')"
 RUN R -e "install.packages('mongolite')"
 RUN R -e "install.packages('aws.s3')"
+RUN R -e "install.packages('gdalUtils', repos='http://R-Forge.R-project.org')"
 RUN R -e "install.packages('gdalUtilities')"
 RUN R -e "install.packages('rasterDT')"
 RUN R -e "install.packages('rvest')"
