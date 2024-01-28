@@ -138,7 +138,7 @@ sudo 7za x -o/data/singleLayers /data/singleLayers2.7z
 sudo 7za x -o/data/singleLayers /data/singleLayers3.7z
 sudo 7za x -o/data/singleLayers /data/singleLayers4.7z
 
-sudo 7za x -o/data/rasterLayers /data/rasterLayers.7z
+sudo 7za x -o/data/rasterLayers /data/rasterLayer.7z
 #sudo 7za x -o/data/rasterLayers /data/rasterLayers/N1_2000_2002.7z
 #sudo 7za x -o/data/rasterLayers /data/rasterLayers/N2_2000_2002.7z
 #sudo 7za x -o/data/rasterLayers /data/rasterLayers/N3_2000_2002.7z
@@ -163,7 +163,7 @@ sudo 7za x -o/data/rasterLayers /data/rasterLayers.7z
 #sudo 7za x -o/data/rasterLayers /data/rasterLayers/vat_dbf.7z
 
 
-sudo 7za x -o/data/species/biomod /data/Biomod.7z -y
+sudo 7za x -o/data/species/biomod /data/Biomod_v2ByNumbers.7z -y #updated 
 sudo 7za x -o/data/species/biomod/spByCell /data/species/biomod/0.7z -aoa # 76135 #
 sudo 7za x -o/data/species/biomod/spByCell /data/species/biomod/1.7z -aoa # 219500 #
 sudo 7za x -o/data/species/biomod/spByCell /data/species/biomod/205.7z -aoa  # 207982 #
@@ -187,6 +187,7 @@ sudo 7za x -o/data /data/templates.7z
 sudo reboot
 
 ## Launch docker, but first move the the folder
+## a /s3.env file needs to be created if a new EC instance was set
 cd ~/plumber/ # here should be the conifg. files
 sudo docker-compose up -d
 

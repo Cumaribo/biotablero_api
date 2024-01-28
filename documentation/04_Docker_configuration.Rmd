@@ -278,7 +278,15 @@ sudo 7za x -o/data/forest /data/forest.7z
 sudo 7za x -o/data /data/rli_surface.tar
 sudo 7za x -o/data /data/templates.7z
 ```
+## crear permiso s3.env
+Here are the general steps to set up a new s3.env file:
 
+Create an IAM user in AWS:
+- Log in to the AWS Management Console.
+- Navigate to the IAM service.
+- Create a new user and provide it with programmatic access.
+- Attach the necessary permissions to this user. If it's for S3, you can attach the AmazonS3FullAccess policy.
+-create access key
 
 ## 6. Inicializar docker
 
