@@ -19,8 +19,7 @@ plot(dep, axes = TRUE, xlim = c(-75, -70), ylim = c(-4, 12))
 plot(polyg, add = TRUE, border = 1, col = 2)
 st_write(polyg, paste0('/Users/sputnik/Documents/biotablero_api/ssd/', 'Macuira', '.shp'))
 
-aws <- 'ec2-54-196-160-233.compute-1.amazonaws.com'
-#aws <- 'ec2-3-84-170-26.compute-1.amazonaws.com'
+aws <- 'ec2-54-173-12-47.compute-1.amazonaws.com'
 localDataPath <- '/Users/sputnik/Documents/biotablero_api/data'
 
 ## Understanding the API
@@ -68,7 +67,7 @@ system.time(ForChange_aws <- biotablero(server = 'web', webURL = aws, port = ':8
                                         endpoint = 'biotablero', metric = 'forest', 
                                         sour = 'hansen', ebvstat = 'forest.ext',
                                         pol = simplePol))
-#http://ec2-3-137-83-192.us-east-2.compute.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
+#http://ec2-54-173-12-47.compute-1.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
 #user  system elapsed 
 #0.05    0.00  191.84 
 
@@ -77,7 +76,7 @@ system.time(ForChange_awsFrac <- biotablero(server = 'web', webURL = aws, port =
                                         endpoint = 'biotablero', metric = 'forest', 
                                         sour = 'hansen', ebvstat = 'frac.dim.index',
                                         pol = simplePol))
-#http://ec2-3-92-160-103.compute-1.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
+#http://ec2-54-173-12-47.compute-1.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=hansen&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
 #user  system elapsed 
 #0.05    0.00  191.84 
 
@@ -95,7 +94,7 @@ system.time(ForCh2_aws <- biotablero(server = 'web', webURL = aws, port = ':8000
                                      endpoint = 'biotablero', metric = 'forest', 
                                      sour = 'ideam', ebvstat = 'forest.ext',
                                      pol = simplePol))
-# http://ec2-3-92-160-103.compute-1.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=ideam&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
+# http://ec2-54-173-12-47.compute-1.amazonaws.com:8000/biotablero?metric=forest&ebvstat=forest.ext&sour=ideam&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
 
 
 ## >> Corine Land Cover
@@ -109,7 +108,7 @@ system.time(clc1_aws <- biotablero(server = 'web', webURL = aws, port = ':8000',
                                    endpoint = 'biotablero', metric = 'clc', 
                                    clclevel = 1, 
                                    pol = simplePol))
-#http://ec2-3-92-160-103.compute-1.amazonaws.com:8000/biotablero?metric=clc&clclevel=1&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
+#http://ec2-54-173-12-47.compute-1.amazonaws.com:8000/biotablero?metric=clc&clclevel=1&pol=POLYGON((-72.07%2012.04,-71.44%2011.800,-71.25%2012.05,-71.24%2012.16,-71.59%2012.33,-72.07%2012.04))
 #user  system elapsed 
 #0.01    0.00  115.67 
 
