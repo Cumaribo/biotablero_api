@@ -29,11 +29,11 @@
 # ForChange_aws <- biotablero(server = 'web', webURL = aws, port = ':8000', printURL = TRUE,
 #                             endpoint = 'biotablero', metric = 'forest', 
 #                             sour = 'hansen', ebvstat = 'area',
-#                             ebvyear='2000:2018',
+#                             ebvyear='2000:2021',
 #                             pol = simplePol)
 
 
-biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath = NULL, printURL = FALSE, 
+biotablero <- function(server = ' 127.0.0.1', port = ':8000', webURL = NULL, dataPath = NULL, printURL = FALSE, 
                        endpoint = 'biotablero',
                        metric = NULL, lay = NULL, polID = NULL, pol = NULL, outformat = NULL,
                        ebvstat = NULL, sour = NULL, cellSize = NULL, rasterLayer = FALSE, ... ) {
@@ -67,7 +67,6 @@ biotablero <- function(server = 'local', port = ':8000', webURL = NULL, dataPath
   return(query)
 }
 
-                    
 ## URLonections 
-aws <- 'ec2-3-21-142-154.us-east-2.compute.amazonaws.com'
-aws_port <- ':8080'
+aws <- 'ec2-54-196-160-233.compute-1.amazonaws.com'
+aws_port <- ':8000'

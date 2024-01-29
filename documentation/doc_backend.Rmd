@@ -1,0 +1,54 @@
+---
+title: "Biotablero-Backend Parallel Assessment"
+output: html_notebook
+---
+Comparar  las salidas gráficas-tabulares que produce biotablero_api con las que están en Biotablero (IAVH)  sin necesidad de necesidad de agregar datos nuevos.  
+
+
+1. Salidas de datos que puedan representarse más fácil en Biotablero
+
+3. Consultas personalizadas.Que tipo de consultas se pueden hacer?
+
+4. Biotablero tiene áreas predefinidas, backend acepta áreas definidas por el usuario (limitante: superficie máxima 5.000 kmˆ2) 
+
+5. Que indicadores se pueden usar para analizar esta información?
+
+
+## Salidas de datos.
+
+
+### Ecosistemas
+
+Hice pruebas con diferentes zonas de estudio, y el funcionamiento es correcto. Utilicé el polígono de Bogota (todo el distrito, incluyendo la localidad de Sumapaz para ello). 
+Biotablero presenta la información en Ha, Backend en kmˆ2. Creo que sería mejor utilizar las mismas unidades en ambos casos; ha, sobretodo porque landscapemetrics por defecto retorna los resultados en ha. Para backend, se utilizó un sistema propio para calcular áreas. Yo creo que es mejor utilizar landscapemetrics para eso (y mejorar las salidas, dando información más interesante, por ejemplo incluyndo variables ecologicas como fragmentación,tamaño de los parches, y otras métricas relevantes.  
+
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <-"
+| Elemento      |     Backend  | Biotablero  |Obs |
+|---------------|-------------|----------------|------------------:|
+| Bosques| IDEAM (1990-2016)  Hansen (2000-2018) (anual/% cobertura)| Hansen Armonizado periodos 5 años | Actualizar script y 2018-2021 
+| Integridad bosques | NA | Combinación ICE (Hansen et al 2019) y HH-Biotablero | Agregar a Backend |
+| Coberturas |CLC no funciona  | CLC 2018 Natural/Secundaria/Transformada|  |
+| Areas Protegidas| AP not running| AP |  |
+| Páramos |Páramos 913.948kmˆ2 56.2 % |Páramos 89240 ha 56.24% | Ajustar Areas/poligonos. Funciona bien |
+| Bosque Seco Tropical | 0 | 0 | Probar en algun lado con BST |
+| Humedales| Probar | 75,738 ha 20.02% en PA| Ver por que no funciona |
+| Lista Roja Ecos | Error | NA | ver por que no funciona. Agregar a BT |
+| Especies | Biomodelos 2.257 Especies Incluye lista detallada, no gráficos |  Biomodelos 2226 Especies. Clasificación  endémicas/ invasoras/amenzadas, vacíos y  registros observados (ID2) | Combinar  y validar datasets|
+| Huella Humana | NA | Índice Huella Humana Correa-Ayram et al 2020 Actual/persistencia/Histórico| Agregar Backend |
+| Integridad | NA | Combinación ICE (Hansen et al 2019) y HH-Biotablero | Agregar Backend | 
+| Conectividad Áreas protegidas | NA | Calculada del RUNAP | Agregar Backend |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
+
+I am always geting this error:
+
+ubuntu@ip-172-31-12-237:~$ sudo docker run -it biotablero /bin/bash
+Error in stopOnLine(lineNum, file[lineNum], e) : 
+  Error on line #1: '### Load required libraries' - Error in library(gdalUtils): there is no package called ‘gdalUtils’
+Calls: <Anonymous> ... tryCatchList -> tryCatchOne -> <Anonymous> -> stopOnLine
+Execution halted
+ For some reason gdalUtils is giving a lot of trouble!!!!!
+I solved it  by removing forestchange
+

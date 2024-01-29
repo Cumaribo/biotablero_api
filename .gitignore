@@ -2,3 +2,14 @@
 .Rhistory
 .RData
 .Ruserdata
+<<<<<<< HEAD
+=======
+README.md
+documentation/key_biotablero.pem
+documentation/02_AWS_configuration.pptx
+data/.DS_Store
+data/forest
+.DS_Store
+documentation/doc_backend.nb.html
+s3.env
+>>>>>>> 50d4c4b3893e8fb3978ce552df44cc12f6302a4c

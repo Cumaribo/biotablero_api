@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"name": "mariquita_GeoJSON",
+"features": [
+{ "type": "Feature", "id": 1, "properties": { "ID": 1.0 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -75.06, 2.2 ], [ -75.06, 3.21 ], [ -74.14, 3.21 ], [ -74.14, 2.2 ], [ -75.06, 2.2 ] ] ] } }
+]
+}
