@@ -82,14 +82,13 @@ raster_count <- structure(function # Count the pixels in a given raster
 metrics <- c('biome', 'ecouicn', 'faccomp', 'bioticreg', 'tropdryforest', 'param',
              'hum', 'sma', 'protectareas', 'colectareas', 'clc', 'forest', 'rli', 
              'species', 'threatspecies', 'evalspecies', 'knownspecies', 'surface', 
-             'hum_rast', 
-             'test')
+             'hum_rast', 'test')
 
 ## Default geographic coordinate reference system
 prj <- "+proj=tmerc +lat_0=4.596200417 +lon_0=-74.07750791700001 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +units=m +no_defs"
 
 ## Maximum km2 allowed for queries
-thresholdKm2 <- 5000
+thresholdKm2 <- 2000
 
 ## MongoDB fields
 mongoFields <- c("kingdom", "phylum", "class", "order", "family", "genus", "species", 
@@ -140,12 +139,10 @@ function(pol = NA){
     ## Create a gdal-readable object from WKT
     wkt <- tryCatch(SpatialPolygonsDataFrame(readWKT(gsub('%20', ' ', pol)), data.frame(ID = 1)),
                     error = function(e) NULL)
-    
     if (is.null(wkt)){
       return("ERROR: Not a valid WKT object")
       stop()
     }
-    
     lr <- suppressWarnings(list(polsizekm2 = area(wkt)/1000000))
     return(lr)
   }
@@ -153,7 +150,7 @@ function(pol = NA){
 
 
 #* List the available spatial templates
-#* @param templatesPath The path containign the available layers
+#* @param templatesPath The path containing the available layers
 #* @get /listTemplates
 function(templatesPath = '/data/templates'){
   gsub('.dbf', '', list.files(path = templatesPath, pattern = '.dbf'))
@@ -161,8 +158,8 @@ function(templatesPath = '/data/templates'){
 
 
 #* Get the template table & IDs
-#* @param template The table requiered
-#* @param dataTemplates The path containign the available layers
+#* @param template The table required
+#* @param dataTemplates The path containing the available layers
 #* @get /getTemplate
 function(template = NA, templatesPath = '/data/templates'){
   templateTable <- tryCatch(foreign::read.dbf(paste0(templatesPath, '/', template, '.dbf')),
@@ -171,7 +168,6 @@ function(template = NA, templatesPath = '/data/templates'){
     return("ERROR: Not a valid template. Use the 'listTemplates' function to know available options")
     stop()
   }
-  
   return(templateTable)
 }
 
@@ -195,8 +191,6 @@ function(template = NA, templatesPath = '/data/templates'){
 #* @param dataPath The data folder path.
 #* @serializer unboxedJSON
 #* @get /biotablero
-
-
 
 
 function(metric = NA, lay = NA, polID = NA, pol = NA, 
@@ -226,7 +220,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
     return(paste0("ERROR: ", metric, " not a valid metric"))
     stop()
   }
-  
   
   ## Get into the static metrics ------
   if (metric %in% 'rli') {
@@ -268,7 +261,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
                       'hum', 'param', 'sma', 'protectareas', 'tropdryforest')){
       
       print(paste0('Calculating results from -', metric, '- metric'))
-      
       
       ## Default columns into each shapefile
       layerFields <- c('id', 'name')
@@ -926,7 +918,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
           }
         } 
         
-     
         ## Get the pixels ID in the region
         suppressWarnings(rastID <- gdalUtils::gdalwarp(srcfile = paste0(dataPath, '/species/biomod/idRast.tif'),
                                       dstfile = tempIDrast,
@@ -1038,7 +1029,6 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       
     }
   }
-  
   ## Load pre-calculated values. A 'metrics' variable is ------
   ## stored in each RData from forest output/forest/...RData
   if (is.null(pol) & (!is.null(lay) & !is.null(polID) ) ){

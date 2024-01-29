@@ -43,19 +43,19 @@ El backend es una instancia EC2 alojada en Amazon Web Services que corre en la d
 
 Al acceder a la cuenta de Biotablero en [**\textcolor{blue}{Amazon Web Services}**](https://aws.amazon.com/)  es posible revisar las especificaciones, la configuración y el estado operacional de la(s) instancia(s). Las credenciales de acceso son:
 
--Username: biotablerohumboldt@gmail.com
+-Username: biotablero@gmail.com
 -Password: XXXXXXXX
 
 El vínculo **Instances** muestra las instancias disponibles.  [ventana](insertar imagen acá) 
 
 [**\textcolor{blue}{instanceID}**], muestra detalles adicionales de las instancias. La dirección  pública (Public IPv4 DNS); ej  
 ```{bash, eval= FALSE}
-ec2-3-21-142-154.us-east-2.compute.amazonaws.com  
+ec2-54-173-12-47.compute-1.amazonaws.com  
 ```
-y claves de acceso; *key_biotablero_prod.ppk* (**Windows**) ó  *key_biotablero_prod.pem* (**Linux/MacOS**) son necesarios para establecer la conexión SSH/PuTTY-SSH. 
+y claves de acceso; *key_biotablero_prod.ppk* (**Windows**) ó  *key_biotablero_prod.pem* (**Linux/MacOS**) son necesarias para establecer la conexión SSH/PuTTY-SSH. 
+ *pending creation of key for Windows*
 
-## Establecer conexión SSH con el servidor virtual
-
+# Establecer conexión SSH con el servidor virtual
 
 Una vez las instancias están montadas y activas en AWS, el acceso al backend se realiza mediante SSH (Secure Socket Shell) desde la línea de comando de Linux/MacOS o utilizando  [PuTTY],(https://www.sussex.ac.uk/its/services/software/owncomputer/putty), una implementación de SSH para  Windows.  
 
@@ -82,29 +82,65 @@ Para las instancias de BioTablero se ve así (una sola línea):
 
 ```{bash, eval= FALSE}
 ssh -i "key_biotablero_prod.pem"
-ubuntu@ec2-3-21-142-154.us-east-2.compute.amazonaws.com
+ubuntu@ec2-54-173-12-47.compute-1.amazonaws.com
 ```
 
-En la página web de [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.edu/how-to/data-recipes/connect-to-ec2-with-ssh-mac-os-x/) incluye u n tutoprial para establecer la conexión con MacOS.
+La página web de [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.edu/how-to/data-recipes/connect-to-ec2-with-ssh-mac-os-x/) incluye u n tutorial para establecer la conexión con MacOS.
 
-
-Cuando la conexión es establecida exitosamente, la línea de comando despliega un mensaje  similar a este: 
+Cuando la conexión es exitosa, la línea de comando despliega un mensaje  similar a este: 
 [instertar imagen](ya.se) *eventualmente agregar caption*
 
+Se recomienda interactuar como root y no como ubuntu, esto da mas derechos y mas flexibilidad
 
-### Almacenamiento
+```{bash Set user to root, eval= FALSE}
+sudo -i
+```
 
-La información que se va a consultar es almacendada en la unidad externa (revisar como se monta en una sección anterior) se almacena en la carpeta /data, que incluye (hoy)"`r Sys.Date()`" los siguientes datasets:
+# Clone the repository
+
+1. Set credentials
+```{bash set credtinatl, eval=FALSE}
+git config --global user.name "User_name"
+git config --global user.email "your_email@example.com"
+```
+
+2. Generate SSH Key
+```{bash ssh key, eval =FALSE}
+ssh-keygen -t ed25519 -C "jeronimo.rodriguez@temple.edu"
+```
+
+3. add SSH Key to the ssh-agent
+```{bash ssh key, eval =FALSE}
+#Start the agent in the background
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+#Add the SSH Private Key to the ssh-agent:
+
+```
+4. Add the SSH Key to the Gihub account
+Display SSH Public Key and opy to  Clipboard:
+```{bash copy public key, eval=FALSE}
+cat ~/.ssh/id_ed25519.pub
+```
+
+## Almacenamiento
+
+1. Montar la unidad de red
+```{bash mount unit, eval =FALSE}
+sudo file -s /dev/xvdb # 
+sudo mkfs -t xfs /dev/xvdb # initialize // work good if unit is empty
+sudo mount /dev/xvdb /data # Mount "data" unit
+```
+La información que se va a consultar es almacendada en la unidad externa, and is stored in the network drive /data, que incluye (hoy)"`r Sys.Date()`" los siguientes datasets:
 
 
 ## Transferencia de datos entre las Instances y la máquina local.
 
-
 ## Windows
 
-Dos métodos diferentes:
+Two methods available
 
-- Utilizando una interfaz gráfica; WinSCP,  arrastrar y copiar archivos directamente, similar al adminsotrador de archivos de Windows *nota: no lo he hecho aún, lo tengo que probar en la compu del lab pero estoy seguro de qe funciona*
+- Utilizando una interfaz gráfica; WinSCP,  arrastrar y copiar archivos directamente, similar al administrador de archivos de Windows *nota: no lo he hecho aún, lo tengo que probar en una maquina con windows pero estoy seguro de que funciona*
 
 - Utilizando Copia segura de PuTTY (PSCP) desde la línea de comando de Windows (cmd).
 
@@ -159,3 +195,12 @@ scp -i key_biotablero_prod.pem hansen.zip ubuntu@ec2-3-21-142-154.us-east-2.comp
 ```
 
 Referencia: [**\textcolor{blue}{Alaska Satelite Facility}**](https://asf.alaska.edu/how-to/data-recipes/connect-to-ec2-with-ssh-mac-os-x/)
+
+# Debugging and getting this shit to work
+
+AWS_ACCESS_KEY_ID=AKIATCKAQMSYISGZKTNJ
+AWS_SECRET_ACCESS_KEY=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
+
+
+
+
