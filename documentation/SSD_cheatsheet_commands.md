@@ -17,6 +17,7 @@ du -sh * | sort -h
 df -aTh  # check mounted data
 df -h . # all disk available/used
 ```
+These commands are quit with ctrl+c
 
 ## Mounting and unmounting external drive 
 
@@ -65,7 +66,7 @@ sudo mount /dev/nvme1n1 /data # Nitro System
 ### Start
 ```bash
 sudo docker build -t image_biotablero plumber/ # Create an image from our container
-sudo docker run -d -p 8000:8000 --name biotablero -v /data:/data image_biotablero
+sudo docker run -d -p 8000:8000 --name biotablero -v /data:/data image_biotablero # what the fuck does this line do?
 ```
 ### Check history 
 ```bash
