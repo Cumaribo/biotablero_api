@@ -16,7 +16,6 @@ COPY rgeos_0.6-4.tar.gz /tmp/
 
 # Install R packages
 RUN R -e "install.packages('sp')"
-#RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('/tmp/rgdal_1.6-7.tar.gz', repos = NULL, type = 'source')"
 RUN R -e "install.packages('raster')"
 RUN R -e "install.packages('sf')"
