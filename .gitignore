@@ -10,3 +10,5 @@ data/forest
 .DS_Store
 documentation/doc_backend.nb.html
 s3.env
+.DS_Store
+
