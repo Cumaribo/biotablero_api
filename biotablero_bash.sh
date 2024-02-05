@@ -1,8 +1,8 @@
 ## Volumen mount
-sudo file -s /dev/xvdb
-sudo mkfs -t xfs /dev/xvdb
+sudo file -s /dev/xvdf
+sudo mkfs -t xfs /dev/xvdf
 sudo mkdir /data
-sudo mount /dev/xvdb /data
+sudo mount /dev/xvdf /data
 
 ## Install git, docker and docker-compose
 sudo apt-get update -y

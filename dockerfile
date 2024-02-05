@@ -13,6 +13,7 @@ RUN apt-get install -y libssl-dev libsasl2-dev libudunits2-dev
 
 COPY rgdal_1.6-7.tar.gz /tmp/
 COPY rgeos_0.6-4.tar.gz /tmp/ 
+
 # Install R packages
 RUN R -e "install.packages('sp')"
 #RUN R -e "install.packages('devtools')"
@@ -31,6 +32,9 @@ RUN R -e "install.packages('rasterDT')"
 RUN R -e "install.packages('rvest')"
 RUN R -e "install.packages('dplyr')"
 RUN R -e "install.packages('ecochange')"
+RUN R -e "install.packages('devtools')"
+RUN R -e "devtools:::install_github('gearslaboratory/gdalUtils')"
+RUN R -e "install.packages('ecochange')"
 
 
 # Assign the temporal folder in the external drive
@@ -47,3 +51,4 @@ EXPOSE 8000
 
 # Call main script
 ENTRYPOINT ["Rscript", "main.R"]
+
