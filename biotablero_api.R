@@ -415,14 +415,14 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         # This approach calculates areas for all polygons
         # if(metric %in% c('hum', 'ecouicn')){
-        #   areakm2 <- ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
+        #   areakm2 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
         #                      sql = paste0("SELECT ", paste0(layerFields, collapse = ', '),", ST_Area(intersection)/1000000 as km2 FROM (SELECT ", paste0(layerFields, collapse = ', '),
         #                                   ", ST_Intersection(GEOMETRY, ST_GeomFromText('", 
         #                                   writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM ", metric, ")") )
         # } else {
         
         # This approach first filter intersecting polygons, and then calculates areas
-        areakm2 <- ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
+        areakm2 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
                            sql = paste0("SELECT ", paste0(layerFields, collapse = ', '),", ST_Area(intersection)/1000000 as km2 FROM (SELECT ", 
                                         paste0(layerFields, collapse = ', '), ", ST_Intersection(GEOMETRY, ST_GeomFromText('", 
                                         writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM ", metric, " WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
@@ -629,18 +629,18 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         print(paste0('Calculating results from -', metric, '- vector metric '))
         
         ## Calculate areas
-        clc2002 <- ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2000_2002.shp'), dialect = 'SQLite', 
+        clc2002 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2000_2002.shp'), dialect = 'SQLite', 
                            sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('",
                                         writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel, "_2000_2002 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
                                         writeWKT(wkt_pcs, byid = F),"')))")) 
         
-        clc2009 <- ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2005_2009.shp'), dialect = 'SQLite', 
+        clc2009 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2005_2009.shp'), dialect = 'SQLite', 
                            sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('", 
                                         writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel,
                                         "_2005_2009 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
                                         writeWKT(wkt_pcs, byid = F),"')))"))
         
-        clc2012 <- ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2010_2012.shp'), dialect = 'SQLite', 
+        clc2012 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2010_2012.shp'), dialect = 'SQLite', 
                            sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('", 
                                         writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel, "_2010_2012 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
                                         writeWKT(wkt_pcs, byid = F),"')))"))
@@ -967,7 +967,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         ## Check if is present in the area
         if (spFormat %in% c('list') ){
-          uicnSpp <- ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN.shp'),
+          uicnSpp <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN.shp'),
                              dialect = 'sqlite',
                              sql = paste0("SELECT binomial FROM sp_UICN WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('",
                                           writeWKT(wkt, byid = F),"'))"))
@@ -978,7 +978,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         ## Calculate area
         if (spFormat %in% c('area') ){
           
-          uicnSpp <- ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN_pcs.shp'), dialect = 'sqlite',
+          uicnSpp <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN_pcs.shp'), dialect = 'sqlite',
                              sql = paste0("SELECT binomial, ST_AREA(intersection)/1000000 as km2 FROM (SELECT binomial, ST_Intersection(GEOMETRY, ST_GeomFromText('",
                                           writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM sp_UICN_pcs WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
                                           writeWKT(wkt_pcs, byid = F),"')))"))

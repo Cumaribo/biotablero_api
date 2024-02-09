@@ -44,6 +44,7 @@ COPY / /
 
 # Install forestChange from .tar
 #RUN R -e "install.packages('forestChange_1.2.tar.gz', repos = NULL, type = 'source')"
+# RUN R -e "source('start_mongo_speciesrecords.R')" # Run externally once to populate mongoDB
 
 # open port 8000 to traffic
 EXPOSE 8000
