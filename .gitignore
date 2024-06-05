@@ -10,3 +10,6 @@ data/forest
 .DS_Store
 documentation/doc_backend.nb.html
 s3.env
+key_biotablero  
+key_biotablero.pub
+documentation/key_biotablero_prod.pem
