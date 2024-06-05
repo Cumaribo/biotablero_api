@@ -13,9 +13,9 @@ RUN apt-get install -y libssl-dev libsasl2-dev libudunits2-dev
 
 COPY rgdal_1.6-7.tar.gz /tmp/
 COPY rgeos_0.6-4.tar.gz /tmp/ 
+
 # Install R packages
 RUN R -e "install.packages('sp')"
-#RUN R -e "install.packages('devtools')"
 RUN R -e "install.packages('/tmp/rgdal_1.6-7.tar.gz', repos = NULL, type = 'source')"
 RUN R -e "install.packages('raster')"
 RUN R -e "install.packages('sf')"
@@ -31,6 +31,9 @@ RUN R -e "install.packages('rasterDT')"
 RUN R -e "install.packages('rvest')"
 RUN R -e "install.packages('dplyr')"
 RUN R -e "install.packages('ecochange')"
+RUN R -e "install.packages('devtools')"
+RUN R -e "devtools:::install_github('gearslaboratory/gdalUtils')"
+RUN R -e "install.packages('ecochange')"
 
 
 # Assign the temporal folder in the external drive
@@ -41,9 +44,11 @@ COPY / /
 
 # Install forestChange from .tar
 #RUN R -e "install.packages('forestChange_1.2.tar.gz', repos = NULL, type = 'source')"
+# RUN R -e "source('start_mongo_speciesrecords.R')" # Run externally once to populate mongoDB
 
 # open port 8000 to traffic
 EXPOSE 8000
 
 # Call main script
 ENTRYPOINT ["Rscript", "main.R"]
+

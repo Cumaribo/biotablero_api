@@ -88,7 +88,7 @@ metrics <- c('biome', 'ecouicn', 'faccomp', 'bioticreg', 'tropdryforest', 'param
 prj <- "+proj=tmerc +lat_0=4.596200417 +lon_0=-74.07750791700001 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +units=m +no_defs"
 
 ## Maximum km2 allowed for queries
-thresholdKm2 <- 2000
+thresholdKm2 <- 5000
 
 ## MongoDB fields
 mongoFields <- c("kingdom", "phylum", "class", "order", "family", "genus", "species", 
@@ -235,7 +235,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
     
     ## Create a gdal-readable object from WKT
     wkt <- suppressWarnings(tryCatch(SpatialPolygonsDataFrame(readWKT(gsub('%20', ' ', pol)), data.frame(ID = 1)),
-                    error = function(e) NULL))
+                                     error = function(e) NULL))
     
     
     if (is.null(wkt)){
@@ -310,18 +310,18 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         print(paste0('Calculating results from -', metric, '- metric'))
         suppressWarnings(rast <- gdalUtilities::gdalwarp(srcfile = paste0(dataPath, '/rasterLayers/', metric, '.tif'),
-                                        dstfile = rastTemp,
-                                        csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
-                                        cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
-                                        dstnodata = 999,
-                                        crop_to_cutline = TRUE,
-                                        overwrite = TRUE))
+                                                         dstfile = rastTemp,
+                                                         csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
+                                                         cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
+                                                         dstnodata = 999,
+                                                         crop_to_cutline = TRUE,
+                                                         overwrite = TRUE))
         
         
         
         rastC <- raster_count(rast, n256 = n256)
         rastC <- rastC[which(rastC$count > 0 & !is.na(rastC$id)), ]
-          
+        
         if (nrow(rastC) > 0) { # non empty result
           
           suppressWarnings(rastInfo <- capture.output(gdalinfo(datasetname = rast)))
@@ -331,14 +331,26 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
           
           dbf <- read.dbf(paste0(dataPath, '/rasterLayers/', metric, '.tif.vat.dbf'), as.is = TRUE)
           
+          # head(dbf)
           #all(na.omit(rastC$id) %in% dbf$idrast)
-          #dim(dbf)
-          rastCM <- merge(rastC, unique(dbf[, layerFieldsRast]), by.x = 'id', by.y = 'idrast',
-                          all.y = FALSE, stringsAsFactors = TRUE)
+          # dim(dbf)
+          rastCM <- base::merge(rastC, unique(dbf[, layerFieldsRast]), by.x = 'id', by.y = 'idrast',
+                                all.y = FALSE, stringsAsFactors = TRUE)
           
           rastCM$km2 <- rastCM$count * pixAreaKm2
           
           result <- data.frame(rastCM[, c(layerFields, 'km2')])
+          # colclasses <- sapply(dbf, class)
+          # result[colclasses == 'character'] <- 
+          #   sapply(
+          #     result[colclasses == 'character'], 
+          #     FUN = function(x){
+          #       # x <- result[, which(colclasses == 'character')[1]]
+          #       try1 <- tryCatch(error = function(e) NULL,
+          #                        iconv(x, from ='latin1'))
+          #       
+          #     }
+          #   )
           
           file.remove(rastTemp)
           unlink(tempRastDir, recursive = TRUE, force = TRUE)
@@ -346,25 +358,33 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
           
           ######### Raster post processing start
           
-          # if (metric == 'faccomp'){
-          #   
-          #   result <- with(result, aggregate(km2, list(name, factor), sum))
-          #   colnames(result) <- c('name', 'factor', 'km2')
-          #   result$name <- iconv(result$name, from ='utf8')
-          #   result$factor <- as.numeric(result$factor)
-          #   
-          # # } else
-          #   if(metric == 'ecouicn'){
-          #   
-          #   result$Bioma <- iconv(result$Bioma, from ='utf8')
-          #   result$Paisaje <- iconv(result$Paisaje, from ='utf8')  
-          # } 
-          # else if(metric == 'bioticreg'){
-          #   
-          #   result$bioticreg <- iconv(result$name, from ='utf8')
-          #   
-          # } else
-          if(metric == 'protectareas'){
+          if (metric == 'faccomp'){
+            
+            result <- with(result, aggregate(km2, list(name, factor), sum))
+            colnames(result) <- c('name', 'factor', 'km2')
+            result$name <- iconv(result$name, from ='utf8')
+            result$factor <- as.numeric(result$factor)
+            
+          } else if(metric == 'ecouicn'){
+            
+            result$name <- iconv(result$name, from ='latin1')
+            result$Bioma <- iconv(result$Bioma, from ='latin1')
+            result$Fisionomia <- iconv(result$Fisionomia, from ='latin1')
+            result$Paisaje <- iconv(result$Paisaje, from ='latin1')
+            result$Biota <- iconv(result$Biota, from ='latin1')
+            
+            #result$Paisaje <- iconv(result$Paisaje, from ='latin')
+            
+          } else if(metric == 'biome'){
+            
+            result$name <- iconv(result$name, from ='latin1')
+            #result$Bioma <- iconv(result$name, from ='latin1')
+            #result$Paisaje <- iconv(result$Paisaje, from ='latin')
+          } else if(metric == 'bioticreg'){
+            
+            result$name <- iconv(result$name, from = "latin1")
+            
+          } else if(metric == 'protectareas'){
             
             result <- with(result, aggregate(km2, list(id_protect, protected, category_p, date_resol), sum))
             colnames(result) <- c( 'id_protect', 'protected', 'category_p', 'date_resol', 'km2')
@@ -400,6 +420,10 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
             result2 <- with(result2, aggregate(km2, list(category, management), function(x) sum(x, na.rm = TRUE)))
             colnames(result2) <- c('category', 'management', 'km2')
             
+            
+            result1$categs <- iconv(result1$categs, from ='latin1')
+            result2$management <- iconv(result2$management, from ='latin1')
+            
             result <- list(result1 = result1, result2 = result2)
           }
           
@@ -415,18 +439,18 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         # This approach calculates areas for all polygons
         # if(metric %in% c('hum', 'ecouicn')){
-        #   areakm2 <- ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
+        #   areakm2 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
         #                      sql = paste0("SELECT ", paste0(layerFields, collapse = ', '),", ST_Area(intersection)/1000000 as km2 FROM (SELECT ", paste0(layerFields, collapse = ', '),
         #                                   ", ST_Intersection(GEOMETRY, ST_GeomFromText('", 
         #                                   writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM ", metric, ")") )
         # } else {
         
         # This approach first filter intersecting polygons, and then calculates areas
-        areakm2 <- ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
-                           sql = paste0("SELECT ", paste0(layerFields, collapse = ', '),", ST_Area(intersection)/1000000 as km2 FROM (SELECT ", 
-                                        paste0(layerFields, collapse = ', '), ", ST_Intersection(GEOMETRY, ST_GeomFromText('", 
-                                        writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM ", metric, " WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
-                                        writeWKT(wkt_pcs, byid = F),"')))") )
+        areakm2 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/singleLayers/', metric,'.shp'), dialect = 'SQLite', 
+                                      sql = paste0("SELECT ", paste0(layerFields, collapse = ', '),", ST_Area(intersection)/1000000 as km2 FROM (SELECT ", 
+                                                   paste0(layerFields, collapse = ', '), ", ST_Intersection(GEOMETRY, ST_GeomFromText('", 
+                                                   writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM ", metric, " WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
+                                                   writeWKT(wkt_pcs, byid = F),"')))") )
         # }
         
         ## Create a string buffer 
@@ -473,6 +497,10 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
             result$Paisaje <- iconv(result$Paisaje, from ='utf8')
             
           } else if(metric == 'bioticreg'){
+            
+            result$bioticreg <- iconv(result$bioticreg, from ='utf8')
+            
+          } else if(metric == 'biome'){
             
             result$bioticreg <- iconv(result$bioticreg, from ='utf8')
             
@@ -568,20 +596,20 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         ## Cut Colombia Hansen layers with WKT geometry
         suppressWarnings(rast02 <- gdalUtilities::gdalwarp(srcfile = paste0(dataPath, '/rasterLayers/N', clclevel, '_2000_2002.tif'),
-                                          dstfile = rastTemp02,
-                                          csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
-                                          cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
-                                          dstnodata = 999, crop_to_cutline = TRUE, overwrite = TRUE))
+                                                           dstfile = rastTemp02,
+                                                           csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
+                                                           cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
+                                                           dstnodata = 999, crop_to_cutline = TRUE, overwrite = TRUE))
         suppressWarnings(rast09 <- gdalUtilities::gdalwarp(srcfile = paste0(dataPath, '/rasterLayers/N', clclevel, '_2005_2009.tif'),
-                                          dstfile = rastTemp09,
-                                          csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
-                                          cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
-                                          dstnodata = 999, crop_to_cutline = TRUE, overwrite = TRUE))
+                                                           dstfile = rastTemp09,
+                                                           csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
+                                                           cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
+                                                           dstnodata = 999, crop_to_cutline = TRUE, overwrite = TRUE))
         suppressWarnings(rast12 <- gdalUtilities::gdalwarp(srcfile = paste0(dataPath, '/rasterLayers/N', clclevel, '_2010_2012.tif'),
-                                          dstfile = rastTemp12,
-                                          csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
-                                          cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
-                                          dstnodata = 999, crop_to_cutline = TRUE, overwrite = TRUE))
+                                                           dstfile = rastTemp12,
+                                                           csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
+                                                           cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
+                                                           dstnodata = 999, crop_to_cutline = TRUE, overwrite = TRUE))
         
         print(paste0('  Crop done!'))
         
@@ -629,21 +657,21 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         print(paste0('Calculating results from -', metric, '- vector metric '))
         
         ## Calculate areas
-        clc2002 <- ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2000_2002.shp'), dialect = 'SQLite', 
-                           sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('",
-                                        writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel, "_2000_2002 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
-                                        writeWKT(wkt_pcs, byid = F),"')))")) 
+        clc2002 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2000_2002.shp'), dialect = 'SQLite', 
+                                      sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('",
+                                                   writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel, "_2000_2002 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
+                                                   writeWKT(wkt_pcs, byid = F),"')))")) 
         
-        clc2009 <- ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2005_2009.shp'), dialect = 'SQLite', 
-                           sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('", 
-                                        writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel,
-                                        "_2005_2009 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
-                                        writeWKT(wkt_pcs, byid = F),"')))"))
+        clc2009 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2005_2009.shp'), dialect = 'SQLite', 
+                                      sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('", 
+                                                   writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel,
+                                                   "_2005_2009 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
+                                                   writeWKT(wkt_pcs, byid = F),"')))"))
         
-        clc2012 <- ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2010_2012.shp'), dialect = 'SQLite', 
-                           sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('", 
-                                        writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel, "_2010_2012 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
-                                        writeWKT(wkt_pcs, byid = F),"')))"))
+        clc2012 <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath, '/clc/N', clclevel, '_2010_2012.shp'), dialect = 'SQLite', 
+                                      sql = paste0("SELECT clc, ST_Area(intersection)/1000000 as km2 FROM (SELECT clc, ST_Intersection(GEOMETRY, ST_GeomFromText('", 
+                                                   writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM N", clclevel, "_2010_2012 WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
+                                                   writeWKT(wkt_pcs, byid = F),"')))"))
         
         print(paste0('  Crop done!'))
         
@@ -768,19 +796,19 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
       ## Cut Colombia Hansen layers with WKT geometry
       
       suppressWarnings(gdalUtilities::gdalwarp(srcfile = paste0(dataPath, '/forest/tree_', sour ,'_pcs.tif'),
-                              dstfile = treeTemp,
-                              csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
-                              cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
-                              dstnodata = 999, crop_to_cutline = TRUE,
-                              overwrite = TRUE))
+                                               dstfile = treeTemp,
+                                               csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
+                                               cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
+                                               dstnodata = 999, crop_to_cutline = TRUE,
+                                               overwrite = TRUE))
       
       print(' > Cutting tree cover ...')
       
       suppressWarnings(gdalUtilities::gdalwarp(srcfile = paste0(dataPath, '/forest/loss_', sour ,'_pcs.tif'), 
-                              dstfile = lossTemp, 
-                              csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
-                              cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
-                              overwrite = TRUE, dstnodata = 999, crop_to_cutline = TRUE))
+                                               dstfile = lossTemp, 
+                                               csql = paste0("select ST_GeomFromText('", writeWKT(wkt_pcs, byid = F), "')"),
+                                               cutline = paste0(dataPath,'/singleLayers/tempSQlite.sqlite'),
+                                               overwrite = TRUE, dstnodata = 999, crop_to_cutline = TRUE))
       
       
       print(' > Cutting forest loss ...')
@@ -825,10 +853,10 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
                                       change = c('treecover2000','lossyear'),
                                       eco_range = c(ebvporcrange,100), ###
                                       change_vals = (ebvyearnum[1]:ebvyearnum[2]) + del10)
-                 fcmetric <- ecochange::EBVstats(fcmask, stats = ebvstat)
-                 fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
-                 result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
-                 colnames(result)[2] <- ebvstat
+        fcmetric <- ecochange::EBVstats(fcmask, stats = ebvstat)
+        fcmetricSubset <- subset(fcmetric , layer %in% ( (ebvyearnum[1]:ebvyearnum[2]) + del10 - 2000) )
+        result <- data.frame(year = (ebvyearnum[1]:ebvyearnum[2]) + del10, metric = fcmetricSubset$value, row.names = fcmetricSubset$layer)
+        colnames(result)[2] <- ebvstat
       }
       
       rownames(result) <- result$year <- result$year - del10
@@ -866,7 +894,7 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         ## Select records inside the geometry
         spatialQuery <- raster::extract(wkt, mongoResult[, c("decimalLongitude", "decimalLatitude")])
-        mongoResult <- mongoResult[!is.na(spatialQuery$poly.ID), ]
+        mongoResult <- mongoResult[!is.na(spatialQuery$ID), ]
         
         
         ## Return the records
@@ -920,12 +948,12 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         ## Get the pixels ID in the region
         suppressWarnings(rastID <- gdalUtils::gdalwarp(srcfile = paste0(dataPath, '/species/biomod/idRast.tif'),
-                                      dstfile = tempIDrast,
-                                      cutline = paste0(dataPath, '/singleLayers/tempSQlite.sqlite'),
-                                      csql = paste0("select ST_GeomFromText('", writeWKT(wkt, byid = F), "')"),
-                                      crop_to_cutline = TRUE,
-                                      overwrite = TRUE,
-                                      output_Raster = TRUE))
+                                                       dstfile = tempIDrast,
+                                                       cutline = paste0(dataPath, '/singleLayers/tempSQlite.sqlite'),
+                                                       csql = paste0("select ST_GeomFromText('", writeWKT(wkt, byid = F), "')"),
+                                                       crop_to_cutline = TRUE,
+                                                       overwrite = TRUE,
+                                                       output_Raster = TRUE))
         
         cellID <- as.numeric(unique(na.omit(rastID[])))
         
@@ -967,10 +995,10 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         
         ## Check if is present in the area
         if (spFormat %in% c('list') ){
-          uicnSpp <- ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN.shp'),
-                             dialect = 'sqlite',
-                             sql = paste0("SELECT binomial FROM sp_UICN WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('",
-                                          writeWKT(wkt, byid = F),"'))"))
+          uicnSpp <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN.shp'),
+                                        dialect = 'sqlite',
+                                        sql = paste0("SELECT binomial FROM sp_UICN WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('",
+                                                     writeWKT(wkt, byid = F),"'))"))
           binomSpp <- grep(' binomial \\(String\\) ', uicnSpp, value = TRUE)
           result <- data.frame(species = unique(gsub('^ | binomial | km2 |\\(.+\\= ', '', binomSpp)), stringsAsFactors = FALSE)
         }
@@ -978,10 +1006,10 @@ function(metric = NA, lay = NA, polID = NA, pol = NA,
         ## Calculate area
         if (spFormat %in% c('area') ){
           
-          uicnSpp <- ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN_pcs.shp'), dialect = 'sqlite',
-                             sql = paste0("SELECT binomial, ST_AREA(intersection)/1000000 as km2 FROM (SELECT binomial, ST_Intersection(GEOMETRY, ST_GeomFromText('",
-                                          writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM sp_UICN_pcs WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
-                                          writeWKT(wkt_pcs, byid = F),"')))"))
+          uicnSpp <- gdalUtils::ogrinfo(datasource_name = paste0(dataPath,'/species/uicn/sp_UICN_pcs.shp'), dialect = 'sqlite',
+                                        sql = paste0("SELECT binomial, ST_AREA(intersection)/1000000 as km2 FROM (SELECT binomial, ST_Intersection(GEOMETRY, ST_GeomFromText('",
+                                                     writeWKT(wkt_pcs, byid = F), "')) AS intersection FROM sp_UICN_pcs WHERE ST_Intersects(GEOMETRY, ST_GeomFromText('", 
+                                                     writeWKT(wkt_pcs, byid = F),"')))"))
           
           
           # Consider GEOS error in topology
